@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Automatische Buchhandlungs-Diashow mit aktuellen Neuerscheinungen und Instagram-Momenten." />
+    <title>Schaufenster Diashow</title>
+  </head>
+  <body>
+    <main class="stage" aria-live="polite">
+      <section class="slide is-active" id="slide" aria-label="Aktueller Schaufenster-Tipp">
+        <p class="eyebrow" id="eyebrow"></p>
+        <div class="visual" id="visual" aria-hidden="true"></div>
+        <div class="copy">
+          <p class="kicker" id="kicker"></p>
+          <h1 id="title"></h1>
+          <p class="author" id="author"></p>
+          <p class="focus" id="focus"></p>
+          <p class="note" id="note"></p>
+        </div>
+        <footer class="meta">
+          <span id="source"></span>
+          <span id="counter"></span>
+        </footer>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
