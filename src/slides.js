@@ -63,7 +63,7 @@ function instagramMoment([shortcode, palette], index) {
     media: {
       kind: 'video',
       src: `/media/instagram/${shortcode}.mp4`,
-      alt: `Instagram-Video ${index + 1} vom Schnelsener Buechereck`,
+      alt: `Instagram-Video ${index + 1} vom Schnelsener Büchereck`,
       sourceUrl: `https://www.instagram.com/p/${shortcode}/`,
       loop: true
     }
@@ -76,7 +76,7 @@ const bookSlides = [
     title: 'Im Morgengrauen',
     author: 'Marc Raabe',
     focus:
-      'Virale Videos erschuettern die Politik: Eine Frau behauptet, eine Affaere mit dem Kanzler gehabt zu haben. Kurz darauf verschwindet Henrik Westphal, und Art Mayer findet im Berliner U-Bahn-Tunnel eine entstellte Leiche.',
+      'Virale Videos erschüttern die Politik: Eine Frau behauptet, eine Affäre mit dem Kanzler gehabt zu haben. Kurz darauf verschwindet Henrik Westphal, und Art Mayer findet im Berliner U-Bahn-Tunnel eine entstellte Leiche.',
     note:
       'Ein Art-Mayer-Thriller mit politischem Druck, alten Verletzungen und der Frage, wem man noch trauen kann.',
     source: 'Ullstein / Fotoauswahl',
@@ -90,9 +90,9 @@ const bookSlides = [
     title: 'Déjà-vu',
     author: 'Martin Walker',
     focus:
-      'Bruno entdeckt bei einem verfallenen Schloss ein Grab mit drei Skeletten aus Kriegszeiten. Waehrend er alten Verbrechen nachgeht, droht in Saint-Denis neues Chaos durch Hochwasser und politische Gaeste.',
+      'Bruno entdeckt bei einem verfallenen Schloss ein Grab mit drei Skeletten aus Kriegszeiten. Während er alten Verbrechen nachgeht, droht in Saint-Denis neues Chaos durch Hochwasser und politische Gäste.',
     note:
-      'Suedfrankreich, Geschichte und Dorfpolizei: ein ruhiger Krimi mit dunklem Kern.',
+      'Südfrankreich, Geschichte und Dorfpolizei: ein ruhiger Krimi mit dunklem Kern.',
     source: 'Diogenes / Fotoauswahl',
     palette: ['#d8e6d3', '#53765b'],
     symbol: 'MW',
@@ -104,7 +104,7 @@ const bookSlides = [
     title: 'Das kalte Herz von Oxford',
     author: 'Simon Mason',
     focus:
-      'An einem Sommertag verschwindet die vierjaehrige Poppy in Oxford. DI Ray Wilkins ermittelt offiziell, waehrend sein suspendierter Ex-Partner Ryan auf eigene Faust in die Unterwelt abtaucht.',
+      'An einem Sommertag verschwindet die vierjährige Poppy in Oxford. DI Ray Wilkins ermittelt offiziell, während sein suspendierter Ex-Partner Ryan auf eigene Faust in die Unterwelt abtaucht.',
     note:
       'Britischer Ermittlerkrimi mit einem ungleichen Duo und einer Suche gegen die Zeit.',
     source: 'Penguin / Goldmann',
@@ -118,9 +118,9 @@ const bookSlides = [
     title: 'Die Summe aller Dinge',
     author: 'Oliver Bottini',
     focus:
-      'Eine Polizistin sucht nach Antworten zum Tod ihres Mannes, eine Staatsanwaeltin verfolgt Cum-Ex-Spuren, und drei alte Freunde geraten mit riskanten Aktiengeschaeften immer tiefer in die Grauzone.',
+      'Eine Polizistin sucht nach Antworten zum Tod ihres Mannes, eine Staatsanwältin verfolgt Cum-Ex-Spuren, und drei alte Freunde geraten mit riskanten Aktiengeschäften immer tiefer in die Grauzone.',
     note:
-      'Politisch brisanter Kriminalroman ueber Gier, Schuld und die Rechnung, die irgendwann faellig wird.',
+      'Politisch brisanter Kriminalroman über Gier, Schuld und die Rechnung, die irgendwann fällig wird.',
     source: 'DuMont / Fotoauswahl',
     palette: ['#1d2228', '#f0f3f5'],
     symbol: 'OB',
@@ -133,9 +133,9 @@ const bookSlides = [
     title: 'Die Therapeutin und ihre Mörder',
     author: 'Philippa Perry',
     focus:
-      'Als Henry Clayton an den Seven Sisters stirbt, glaubt die Polizei an Selbstmord. Seine Therapeutin Pat Philipps ist sicher: Henry wurde gestossen. Also stellt sie selbst die Fragen, die andere meiden.',
+      'Als Henry Clayton an den Seven Sisters stirbt, glaubt die Polizei an Selbstmord. Seine Therapeutin Pat Philipps ist sicher: Henry wurde gestoßen. Also stellt sie selbst die Fragen, die andere meiden.',
     note:
-      'Ein Cosy-Krimi mit psychologischem Blick, britischer Kueste und einer Ermittlerin, die Menschen lesen kann.',
+      'Ein Cosy-Krimi mit psychologischem Blick, britischer Küste und einer Ermittlerin, die Menschen lesen kann.',
     source: 'Ullstein / Fotoauswahl',
     palette: ['#f2f1df', '#d85a54'],
     symbol: 'PP',
@@ -147,9 +147,9 @@ const bookSlides = [
     title: 'Madame le Commissaire und die tödliche Rallye',
     author: 'Pierre Martin',
     focus:
-      'Isabelle Bonnet liebt schnelle Autos, doch bei einer Rallye in der Provence bleibt es nicht beim Adrenalin. Zwischen Motoren, Rivalitaeten und Urlaubsidylle muss sie einen toedlichen Fall entwirren.',
+      'Isabelle Bonnet liebt schnelle Autos, doch bei einer Rallye in der Provence bleibt es nicht beim Adrenalin. Zwischen Motoren, Rivalitäten und Urlaubsidylle muss sie einen tödlichen Fall entwirren.',
     note:
-      'Sommerlicher Provence-Krimi fuer alle, die Spannung gern mit Sonne, Tempo und franzoesischem Flair lesen.',
+      'Sommerlicher Provence-Krimi für alle, die Spannung gern mit Sonne, Tempo und französischem Flair lesen.',
     source: 'Droemer Knaur / Fotoauswahl',
     palette: ['#a66b45', '#426f82'],
     symbol: 'PM',
@@ -161,9 +161,9 @@ const bookSlides = [
     title: 'Bredouille',
     author: 'Martin Walker',
     focus:
-      'Bruno findet ein verlassenes Auto und darin eine tote Frau. Was wie Selbstmord aussehen soll, fuehrt ihn zu alten Beziehungen, einem schwarzen Schaf in der Gendarmerie und Gefahr fuer den eigenen Ruf.',
+      'Bruno findet ein verlassenes Auto und darin eine tote Frau. Was wie Selbstmord aussehen soll, führt ihn zu alten Beziehungen, einem schwarzen Schaf in der Gendarmerie und Gefahr für den eigenen Ruf.',
     note:
-      'Der achtzehnte Bruno-Fall verbindet Périgord-Atmosphaere, leise Komik und klassische Ermittlungsarbeit.',
+      'Der achtzehnte Bruno-Fall verbindet Périgord-Atmosphäre, leise Komik und klassische Ermittlungsarbeit.',
     source: 'Diogenes / Fotoauswahl',
     palette: ['#e9ead8', '#3c6a40'],
     symbol: 'BR',
@@ -175,9 +175,9 @@ const bookSlides = [
     title: 'Mord ist die beste Beseitigung',
     author: 'Volker Klüpfel',
     focus:
-      'Tommi und Svetlana hoeren im Radio einen Reiseruf, kurz darauf sehen sie den gesuchten Wagen. Die Fahrerin ist verschwunden, und aus einer Rastplatzspur wird ein abgruendig komischer Kriminalfall.',
+      'Tommi und Svetlana hören im Radio einen Reiseruf, kurz darauf sehen sie den gesuchten Wagen. Die Fahrerin ist verschwunden, und aus einer Rastplatzspur wird ein abgründig komischer Kriminalfall.',
     note:
-      'Schraeger Humor, Caravan-Ermittlungen und zwei Figuren, die sich hartnaeckig in jedes Chaos hineinziehen.',
+      'Schräger Humor, Caravan-Ermittlungen und zwei Figuren, die sich hartnäckig in jedes Chaos hineinziehen.',
     source: 'Penguin / Fotoauswahl',
     palette: ['#e89a5b', '#24394a'],
     symbol: 'VK',
@@ -189,9 +189,9 @@ const bookSlides = [
     title: 'Portugiesisches Fieber',
     author: 'Luis Sellano',
     focus:
-      'Kurz vor dem grossen Fado-Festival verschwindet die gefeierte Saengerin Dária Vale. Henrik Falkner und Helena Gomes folgen Spuren durch Lissabons Gassen, bis Musik, Macht und Politik gefaehrlich nah ruecken.',
+      'Kurz vor dem großen Fado-Festival verschwindet die gefeierte Sängerin Dária Vale. Henrik Falkner und Helena Gomes folgen Spuren durch Lissabons Gassen, bis Musik, Macht und Politik gefährlich nah rücken.',
     note:
-      'Lissabon-Krimi mit Fado, Tempo und einer Verschwoerung, die mehr bedroht als nur ein Festival.',
+      'Lissabon-Krimi mit Fado, Tempo und einer Verschwörung, die mehr bedroht als nur ein Festival.',
     source: 'Penguin / Heyne',
     palette: ['#2f3f47', '#d7a06d'],
     symbol: 'LS',
@@ -203,7 +203,7 @@ const bookSlides = [
     title: 'Tatort Trelleborg',
     author: 'Mattias Edvardsson',
     focus:
-      'In Schonen wird Gunni Hilding 1989 zu den Gewaltverbrechen geholt. Ein neuer Fall legt alte Spuren frei und wirft die Frage auf, ob ein Serientaeter viel zu lange unentdeckt geblieben ist.',
+      'In Schonen wird Gunni Hilding 1989 zu den Gewaltverbrechen geholt. Ein neuer Fall legt alte Spuren frei und wirft die Frage auf, ob ein Serientäter viel zu lange unentdeckt geblieben ist.',
     note:
       'Skandinavische Spannung mit klassischer Ermittlungsarbeit, Familiengeheimnissen und langsam wachsendem Druck.',
     source: 'Penguin / Blanvalet',

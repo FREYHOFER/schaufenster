@@ -1,13 +1,13 @@
 # Schaufenster-Diashow
 
-Ein bewusst reduzierter Prototyp fuer ein digitales Buchhandlungs-Schaufenster: automatisch laufend, nicht interaktiv und immer auf genau einen Tipp fokussiert.
+Ein bewusst reduzierter Prototyp für ein digitales Buchhandlungs-Schaufenster: automatisch laufend, per Pfeiltasten durchsehbar und immer auf genau einen Tipp fokussiert.
 
 ## Inhalt
 
 - Zehn aktuelle Krimi- und Thriller-Neuheiten aus den Ladenfotos.
 - Ein Titel pro Slide mit Cover, Klappentext-Fassung und ruhiger Lesedauer.
 - Instagram-Momente aus lokalen Feed-Videos mit reduziertem Follow-Hinweis.
-- Keine Buttons, Filter oder Touch-Interaktion: Die Praesentation laeuft wie eine ruhige Diashow.
+- Dezente Pfeilnavigation und Tastatursteuerung: Die Präsentation läuft trotzdem wie eine ruhige Diashow.
 
 ## Entwicklung
 
