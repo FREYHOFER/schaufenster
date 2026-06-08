@@ -24,12 +24,12 @@ function bookSlide({
   symbol,
   isbn,
   coverExt = 'jpg',
-  durationMs = 50000
+  durationMs = 40000
 }) {
   return {
     type: 'book',
     eyebrow: month,
-    kicker: 'Klappentext',
+    kicker: '',
     title,
     author,
     focus,
@@ -83,7 +83,7 @@ const bookSlides = [
     palette: ['#f0df58', '#26301c'],
     symbol: 'MR',
     isbn: '9783864933653',
-    durationMs: 54000
+    durationMs: 42000
   }),
   bookSlide({
     month: 'Neu seit 20. Mai 2026',
@@ -97,7 +97,7 @@ const bookSlides = [
     palette: ['#d8e6d3', '#53765b'],
     symbol: 'MW',
     isbn: '9783257248432',
-    durationMs: 50000
+    durationMs: 39000
   }),
   bookSlide({
     month: 'Neu seit 13. Mai 2026',
@@ -111,7 +111,7 @@ const bookSlides = [
     palette: ['#202623', '#64b47b'],
     symbol: 'OX',
     isbn: '9783442495658',
-    durationMs: 51000
+    durationMs: 40000
   }),
   bookSlide({
     month: 'Neu im Mai 2026',
@@ -126,7 +126,7 @@ const bookSlides = [
     symbol: 'OB',
     isbn: '9783832181482',
     coverExt: 'png',
-    durationMs: 54000
+    durationMs: 42000
   }),
   bookSlide({
     month: 'Neu seit 07. Mai 2026',
@@ -140,7 +140,7 @@ const bookSlides = [
     palette: ['#f2f1df', '#d85a54'],
     symbol: 'PP',
     isbn: '9783864933905',
-    durationMs: 52000
+    durationMs: 41000
   }),
   bookSlide({
     month: 'Neu seit 04. Mai 2026',
@@ -154,7 +154,7 @@ const bookSlides = [
     palette: ['#a66b45', '#426f82'],
     symbol: 'PM',
     isbn: '9783426529966',
-    durationMs: 49000
+    durationMs: 38000
   }),
   bookSlide({
     month: 'Neu seit 22. April 2026',
@@ -168,7 +168,7 @@ const bookSlides = [
     palette: ['#e9ead8', '#3c6a40'],
     symbol: 'BR',
     isbn: '9783257073843',
-    durationMs: 50000
+    durationMs: 39000
   }),
   bookSlide({
     month: 'Neu seit 22. April 2026',
@@ -182,7 +182,7 @@ const bookSlides = [
     palette: ['#e89a5b', '#24394a'],
     symbol: 'VK',
     isbn: '9783328603580',
-    durationMs: 51000
+    durationMs: 40000
   }),
   bookSlide({
     month: 'Neu seit 16. April 2026',
@@ -196,7 +196,7 @@ const bookSlides = [
     palette: ['#2f3f47', '#d7a06d'],
     symbol: 'LS',
     isbn: '9783453442498',
-    durationMs: 52000
+    durationMs: 41000
   }),
   bookSlide({
     month: 'Neu seit 16. April 2026',
@@ -210,7 +210,7 @@ const bookSlides = [
     palette: ['#ece6d3', '#b7aa31'],
     symbol: 'TE',
     isbn: '9783764510152',
-    durationMs: 50000
+    durationMs: 39000
   })
 ];
 

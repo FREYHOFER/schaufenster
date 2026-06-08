@@ -26,7 +26,7 @@ slides.forEach((slide, index) => {
   assert(slide.note.length <= 220, `slide ${index + 1} note text is too long`);
 
   if (slide.type === 'book') {
-    assert(typeof slide.kicker === 'string' && slide.kicker.trim(), `book slide ${index + 1} is missing kicker`);
+    assert(typeof slide.kicker === 'string', `book slide ${index + 1} kicker must be a string`);
     assert(slide.focus.trim(), `book slide ${index + 1} is missing focus`);
     assert(slide.note.trim(), `book slide ${index + 1} is missing note`);
     assert(slide.media?.kind === 'image', `book slide ${index + 1} needs image media`);

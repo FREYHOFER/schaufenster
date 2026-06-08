@@ -24,8 +24,10 @@ body {
     linear-gradient(145deg, color-mix(in srgb, var(--accent-from), #05070b 76%) 0%, transparent 38%),
     linear-gradient(315deg, color-mix(in srgb, var(--accent-to), #05070b 70%) 0%, transparent 42%),
     #080910;
+  background-size: 145% 145%, 145% 145%, auto;
   color: var(--text);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  animation: body-drift 34s ease-in-out infinite alternate;
 }
 
 .stage {
@@ -52,8 +54,10 @@ body {
     linear-gradient(135deg, color-mix(in srgb, var(--accent-from), transparent 76%), transparent 42%),
     linear-gradient(315deg, color-mix(in srgb, var(--accent-to), transparent 68%), transparent 52%),
     var(--panel);
+  background-size: 130% 130%, 130% 130%, auto;
   box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.34);
   isolation: isolate;
+  animation: slide-tone-drift 26s ease-in-out infinite alternate;
 }
 
 .slide[data-type="instagram"] {
@@ -68,6 +72,20 @@ body {
     linear-gradient(90deg, rgba(0, 0, 0, 0.54), rgba(0, 0, 0, 0.12) 56%, rgba(0, 0, 0, 0.28)),
     linear-gradient(0deg, rgba(0, 0, 0, 0.32), transparent 44%);
   content: "";
+}
+
+.slide::after {
+  position: absolute;
+  inset: -22%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, transparent 0 28%, color-mix(in srgb, var(--accent-from), transparent 74%) 36%, transparent 48%),
+    repeating-linear-gradient(102deg, transparent 0 5.4rem, color-mix(in srgb, var(--accent-to), transparent 86%) 5.4rem 5.55rem);
+  content: "";
+  opacity: 0.34;
+  transform: translate3d(-4%, -2%, 0);
+  animation: background-sweep 24s ease-in-out infinite alternate;
 }
 
 .eyebrow,
@@ -98,7 +116,10 @@ body {
   box-shadow: 0 0 1rem color-mix(in srgb, var(--particle-color), transparent 36%);
   opacity: 0.42;
   transform: translate3d(0, 0, 0);
-  animation: particle-float 18s ease-in-out var(--delay) infinite alternate;
+  animation:
+    particle-float 12s ease-in-out var(--delay) infinite alternate,
+    particle-glow 5.8s ease-in-out var(--delay) infinite;
+  will-change: opacity, transform;
 }
 
 .slide[data-type="instagram"] .eyebrow,
@@ -381,6 +402,97 @@ h1 {
   background: linear-gradient(90deg, var(--accent-from), var(--accent-to));
 }
 
+.nav-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  width: min(13rem, 17vw);
+  align-items: center;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.nav-zone--previous {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: clamp(0.75rem, 2vw, 1.35rem);
+}
+
+.nav-zone--next {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: clamp(0.75rem, 2vw, 1.35rem);
+}
+
+.slide[data-nav-hover="previous"] .nav-zone--previous,
+.slide[data-nav-hover="next"] .nav-zone--next,
+.nav-zone:hover,
+.nav-zone:focus-within {
+  opacity: 1;
+}
+
+.nav-button {
+  display: grid;
+  width: clamp(3rem, 5vw, 4.35rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-from), rgba(8, 9, 16, 0.7) 76%), color-mix(in srgb, var(--accent-to), rgba(8, 9, 16, 0.74) 78%));
+  box-shadow: 0 1rem 2.6rem rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  line-height: 0.7;
+  transform: translateX(var(--nav-offset, 0));
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.nav-zone--previous .nav-button {
+  --nav-offset: -0.35rem;
+}
+
+.nav-zone--next .nav-button {
+  --nav-offset: 0.35rem;
+}
+
+.nav-zone:hover .nav-button,
+.nav-zone:focus-within .nav-button {
+  --nav-offset: 0;
+}
+
+.nav-button:hover,
+.nav-button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.62);
+  outline: none;
+  transform: translateX(var(--nav-offset, 0)) scale(1.04);
+}
+
+@keyframes body-drift {
+  to {
+    background-position: 18% 24%, 82% 68%, 0 0;
+  }
+}
+
+@keyframes slide-tone-drift {
+  to {
+    background-position: 18% 12%, 84% 78%, 0 0;
+  }
+}
+
+@keyframes background-sweep {
+  to {
+    transform: translate3d(4%, 2%, 0);
+  }
+}
+
 @keyframes rise {
   to {
     transform: translateY(0);
@@ -390,8 +502,15 @@ h1 {
 
 @keyframes particle-float {
   to {
-    opacity: 0.16;
-    transform: translate3d(var(--dx), var(--dy), 0) scale(1.2);
+    opacity: 0.24;
+    transform: translate3d(var(--dx), var(--dy), 0) scale(1.28);
+  }
+}
+
+@keyframes particle-glow {
+  50% {
+    filter: saturate(1.7);
+    opacity: 0.58;
   }
 }
 
@@ -551,5 +670,28 @@ h1 {
   .note {
     display: none;
     font-size: 1rem;
+  }
+
+  .nav-zone {
+    width: 4.8rem;
+  }
+
+  .nav-zone--previous {
+    padding-left: 0.45rem;
+  }
+
+  .nav-zone--next {
+    padding-right: 0.45rem;
+  }
+
+  .nav-button {
+    width: 2.7rem;
+    font-size: 2.25rem;
+  }
+}
+
+@media (hover: none) {
+  .nav-zone {
+    opacity: 0.58;
   }
 }

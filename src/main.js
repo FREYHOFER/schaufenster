@@ -13,7 +13,9 @@ const refs = {
   note: document.querySelector('#note'),
   source: document.querySelector('#source'),
   counter: document.querySelector('#counter'),
-  progressBar: document.querySelector('#progressBar')
+  progressBar: document.querySelector('#progressBar'),
+  previousSlide: document.querySelector('#previousSlide'),
+  nextSlide: document.querySelector('#nextSlide')
 };
 
 const params = new URLSearchParams(window.location.search);
@@ -21,6 +23,10 @@ const params = new URLSearchParams(window.location.search);
 let currentIndex = getInitialIndex();
 let advanceTimeoutId;
 let progressAnimation;
+
+function normalizeIndex(index) {
+  return ((index % slides.length) + slides.length) % slides.length;
+}
 
 function getInitialIndex() {
   const rawIndex = params.get('index');
@@ -38,7 +44,7 @@ function getInitialIndex() {
   }
 
   const index = rawSlide ? value - 1 : value;
-  return ((index % slides.length) + slides.length) % slides.length;
+  return normalizeIndex(index);
 }
 
 function isPaused() {
@@ -233,6 +239,15 @@ function scheduleNextSlide(durationMs) {
   }
 }
 
+function syncUrlToSlide(index) {
+  params.set('slide', String(index + 1));
+  params.delete('index');
+
+  const query = params.toString();
+  const nextUrl = `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`;
+  window.history.replaceState(null, '', nextUrl);
+}
+
 function startProgress(durationMs) {
   refs.root.style.setProperty('--duration', `${durationMs}ms`);
   progressAnimation?.cancel();
@@ -294,6 +309,7 @@ function renderSlide(index) {
 
   refs.root.style.setProperty('--accent-from', from);
   refs.root.style.setProperty('--accent-to', to);
+  syncUrlToSlide(index);
 
   refs.slide.dataset.type = slide.type;
   refs.slide.dataset.media = slide.media?.kind || 'symbol';
@@ -331,16 +347,76 @@ function renderSlide(index) {
 }
 
 function nextSlide() {
-  currentIndex = (currentIndex + 1) % slides.length;
+  currentIndex = normalizeIndex(currentIndex + 1);
   renderSlide(currentIndex);
 }
 
-renderSlide(currentIndex);
+function previousSlide() {
+  currentIndex = normalizeIndex(currentIndex - 1);
+  renderSlide(currentIndex);
+}
+
+function handleKeyboardNavigation(event) {
+  if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+    return;
+  }
+
+  if (event.key === 'ArrowRight') {
+    event.preventDefault();
+    nextSlide();
+    return;
+  }
+
+  if (event.key === 'ArrowLeft') {
+    event.preventDefault();
+    previousSlide();
+  }
+}
+
+function handlePointerNavigation(event) {
+  if (event.pointerType === 'touch') {
+    return;
+  }
+
+  const rect = refs.slide.getBoundingClientRect();
+  const position = (event.clientX - rect.left) / rect.width;
+
+  if (position <= 0.22) {
+    refs.slide.dataset.navHover = 'previous';
+    return;
+  }
+
+  if (position >= 0.78) {
+    refs.slide.dataset.navHover = 'next';
+    return;
+  }
+
+  delete refs.slide.dataset.navHover;
+}
+
+function clearPointerNavigation() {
+  delete refs.slide.dataset.navHover;
+}
+
+function bindNavigation() {
+  refs.nextSlide?.addEventListener('click', nextSlide);
+  refs.previousSlide?.addEventListener('click', previousSlide);
+  refs.slide.addEventListener('pointermove', handlePointerNavigation);
+  refs.slide.addEventListener('pointerleave', clearPointerNavigation);
+  window.addEventListener('keydown', handleKeyboardNavigation);
+}
+
+function renderCurrentSlide() {
+  renderSlide(currentIndex);
+}
+
+bindNavigation();
+renderCurrentSlide();
 
 document.addEventListener('visibilitychange', () => {
   window.clearTimeout(advanceTimeoutId);
 
   if (document.visibilityState === 'visible') {
-    renderSlide(currentIndex);
+    renderCurrentSlide();
   }
 });
