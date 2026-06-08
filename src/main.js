@@ -23,6 +23,7 @@ const params = new URLSearchParams(window.location.search);
 let currentIndex = getInitialIndex();
 let advanceTimeoutId;
 let progressAnimation;
+let particleAnimationTimerId;
 
 function normalizeIndex(index) {
   return ((index % slides.length) + slides.length) % slides.length;
@@ -272,34 +273,87 @@ function seededValue(seed) {
   return value - Math.floor(value);
 }
 
+function stopParticleAnimation() {
+  if (particleAnimationTimerId) {
+    window.clearInterval(particleAnimationTimerId);
+    particleAnimationTimerId = undefined;
+  }
+}
+
+function animateHeatParticles(specs) {
+  stopParticleAnimation();
+
+  const animate = () => {
+    const seconds = window.performance.now() / 1000;
+
+    specs.forEach((spec) => {
+      const rawProgress = (seconds / spec.duration + spec.offset) % 1;
+      const easedProgress = rawProgress * rawProgress * (3 - 2 * rawProgress);
+      const fadeIn = Math.min(rawProgress / 0.16, 1);
+      const fadeOut = rawProgress > 0.72 ? Math.max(0, (1 - rawProgress) / 0.28) : 1;
+      const opacity = spec.opacity * fadeIn * fadeOut;
+      const sway = Math.sin(rawProgress * Math.PI * 2 + spec.wobble) * spec.sway;
+      const x = spec.driftX * easedProgress + sway;
+      const y = 24 + spec.driftY * easedProgress;
+      const scale = 0.45 + easedProgress * 1.05;
+
+      spec.element.style.opacity = opacity.toFixed(3);
+      spec.element.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
+    });
+  };
+
+  animate();
+  particleAnimationTimerId = window.setInterval(animate, 33);
+}
+
 function renderParticles(slide, index) {
+  stopParticleAnimation();
   refs.slide.querySelector('.particles')?.remove();
 
   const field = document.createElement('div');
   field.className = 'particles';
   field.setAttribute('aria-hidden', 'true');
 
-  const count = slide.type === 'book' ? 34 : 18;
+  const count = slide.type === 'book' ? 96 : 58;
   const colors = slide.palette;
+  const specs = [];
 
   for (let i = 0; i < count; i += 1) {
     const particle = document.createElement('span');
     const seed = (index + 1) * 97 + i * 17;
-    const size = 4 + seededValue(seed + 1) * 13;
-    const driftX = -44 + seededValue(seed + 2) * 88;
-    const driftY = -36 + seededValue(seed + 3) * 72;
+    const size = 1.6 + seededValue(seed + 1) * 5.4;
+    const driftX = -78 + seededValue(seed + 2) * 156;
+    const driftY = -180 - seededValue(seed + 3) * 320;
+    const startY = 78 + seededValue(seed + 5) * 32;
+    const duration = 6.5 + seededValue(seed + 6) * 8.5;
+    const opacity = 0.18 + seededValue(seed + 7) * 0.32;
+    const blur = seededValue(seed + 8) * 1.8;
+    const offset = seededValue(seed + 9);
+    const sway = 8 + seededValue(seed + 10) * 26;
+    const wobble = seededValue(seed + 11) * Math.PI * 2;
 
     particle.style.setProperty('--x', `${seededValue(seed + 4) * 100}%`);
-    particle.style.setProperty('--y', `${seededValue(seed + 5) * 100}%`);
+    particle.style.setProperty('--y', `${startY}%`);
     particle.style.setProperty('--size', `${size}px`);
-    particle.style.setProperty('--dx', `${driftX}px`);
-    particle.style.setProperty('--dy', `${driftY}px`);
-    particle.style.setProperty('--delay', `${seededValue(seed + 6) * -18}s`);
+    particle.style.setProperty('--delay', `${offset * duration * -1}s`);
+    particle.style.setProperty('--heat-duration', `${duration}s`);
+    particle.style.setProperty('--particle-blur', `${blur.toFixed(2)}px`);
     particle.style.setProperty('--particle-color', colors[i % colors.length]);
     field.append(particle);
+    specs.push({
+      element: particle,
+      driftX,
+      driftY,
+      duration,
+      offset,
+      opacity,
+      sway,
+      wobble
+    });
   }
 
   refs.slide.prepend(field);
+  animateHeatParticles(specs);
 }
 
 function renderSlide(index) {
