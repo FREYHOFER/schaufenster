@@ -19,7 +19,8 @@ const refs = {
 const params = new URLSearchParams(window.location.search);
 
 let currentIndex = getInitialIndex();
-let intervalId;
+let advanceTimeoutId;
+let progressAnimation;
 
 function getInitialIndex() {
   const rawIndex = params.get('index');
@@ -105,16 +106,19 @@ function renderVideo(slide) {
   const video = document.createElement('video');
   video.className = 'visual-video';
   video.autoplay = true;
-  video.loop = true;
+  video.loop = slide.media.loop !== false;
   video.muted = true;
   video.playsInline = true;
   video.preload = 'auto';
   video.disablePictureInPicture = true;
   video.setAttribute('autoplay', '');
-  video.setAttribute('loop', '');
   video.setAttribute('muted', '');
   video.setAttribute('playsinline', '');
   video.setAttribute('aria-label', slide.media.alt || slide.title);
+
+  if (video.loop) {
+    video.setAttribute('loop', '');
+  }
 
   if (slide.media.poster) {
     video.poster = slide.media.poster;
@@ -129,6 +133,7 @@ function renderVideo(slide) {
 
   refs.visual.append(video);
   video.play().catch(() => {});
+  return video;
 }
 
 function renderInstagramEmbed(slide) {
@@ -178,60 +183,148 @@ function renderVisual(slide) {
 
   if (media?.kind === 'image' && media.src) {
     renderImage(slide);
-    return;
+    return null;
   }
 
   if (media?.kind === 'video' && media.src) {
-    renderVideo(slide);
-    return;
+    return renderVideo(slide);
   }
 
   if (media?.kind === 'instagram' && media.src) {
     if (isDirectVideo(media.src)) {
-      renderVideo({ ...slide, media: { ...media, kind: 'video' } });
-      return;
+      return renderVideo({ ...slide, media: { ...media, kind: 'video' } });
     }
 
     renderInstagramEmbed(slide);
-    return;
+    return null;
   }
 
   if (media?.kind === 'instagram') {
     renderInstagramPoster(slide);
-    return;
+    return null;
   }
 
   renderSymbol(slide);
+  return null;
+}
+
+function setOptionalText(ref, value) {
+  ref.textContent = value || '';
+  ref.hidden = !value;
+}
+
+function getSlideDuration(slide) {
+  return slide.durationMs || slideDurationMs;
+}
+
+function getVideoDuration(video, fallbackMs) {
+  if (!Number.isFinite(video.duration) || video.duration <= 0) {
+    return fallbackMs;
+  }
+
+  return Math.max(fallbackMs, Math.ceil(video.duration * 1000) + 1200);
+}
+
+function scheduleNextSlide(durationMs) {
+  window.clearTimeout(advanceTimeoutId);
+
+  if (!isPaused()) {
+    advanceTimeoutId = window.setTimeout(nextSlide, durationMs);
+  }
+}
+
+function startProgress(durationMs) {
+  refs.root.style.setProperty('--duration', `${durationMs}ms`);
+  progressAnimation?.cancel();
+
+  refs.progressBar.style.transform = 'scaleX(0)';
+
+  if (isPaused()) {
+    return;
+  }
+
+  progressAnimation = refs.progressBar.animate(
+    [
+      { transform: 'scaleX(0)' },
+      { transform: 'scaleX(1)' }
+    ],
+    { duration: durationMs, easing: 'linear', fill: 'forwards' }
+  );
+}
+
+function seededValue(seed) {
+  const value = Math.sin(seed) * 10000;
+  return value - Math.floor(value);
+}
+
+function renderParticles(slide, index) {
+  refs.slide.querySelector('.particles')?.remove();
+
+  const field = document.createElement('div');
+  field.className = 'particles';
+  field.setAttribute('aria-hidden', 'true');
+
+  const count = slide.type === 'book' ? 34 : 18;
+  const colors = slide.palette;
+
+  for (let i = 0; i < count; i += 1) {
+    const particle = document.createElement('span');
+    const seed = (index + 1) * 97 + i * 17;
+    const size = 4 + seededValue(seed + 1) * 13;
+    const driftX = -44 + seededValue(seed + 2) * 88;
+    const driftY = -36 + seededValue(seed + 3) * 72;
+
+    particle.style.setProperty('--x', `${seededValue(seed + 4) * 100}%`);
+    particle.style.setProperty('--y', `${seededValue(seed + 5) * 100}%`);
+    particle.style.setProperty('--size', `${size}px`);
+    particle.style.setProperty('--dx', `${driftX}px`);
+    particle.style.setProperty('--dy', `${driftY}px`);
+    particle.style.setProperty('--delay', `${seededValue(seed + 6) * -18}s`);
+    particle.style.setProperty('--particle-color', colors[i % colors.length]);
+    field.append(particle);
+  }
+
+  refs.slide.prepend(field);
 }
 
 function renderSlide(index) {
   const slide = slides[index];
   const [from, to] = slide.palette;
+  const baseDuration = getSlideDuration(slide);
 
   refs.root.style.setProperty('--accent-from', from);
   refs.root.style.setProperty('--accent-to', to);
-  refs.root.style.setProperty('--duration', `${slideDurationMs}ms`);
 
   refs.slide.dataset.type = slide.type;
   refs.slide.dataset.media = slide.media?.kind || 'symbol';
   refs.eyebrow.textContent = slide.eyebrow;
-  refs.kicker.textContent = slide.kicker;
+  setOptionalText(refs.kicker, slide.kicker);
   refs.title.textContent = slide.title;
   refs.author.textContent = slide.author;
-  refs.focus.textContent = slide.focus;
-  refs.note.textContent = slide.note;
+  setOptionalText(refs.focus, slide.focus);
+  setOptionalText(refs.note, slide.note);
   refs.source.textContent = slide.source;
   refs.counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-  renderVisual(slide);
+  renderParticles(slide, index);
+  const mediaElement = renderVisual(slide);
 
-  refs.progressBar.getAnimations().forEach((animation) => animation.cancel());
-  refs.progressBar.animate(
-    [
-      { transform: 'scaleX(0)' },
-      { transform: 'scaleX(1)' }
-    ],
-    { duration: slideDurationMs, easing: 'linear', fill: 'forwards' }
-  );
+  startProgress(baseDuration);
+  scheduleNextSlide(baseDuration);
+
+  if (mediaElement instanceof HTMLVideoElement) {
+    const syncVideoDuration = () => {
+      const videoDuration = getVideoDuration(mediaElement, baseDuration);
+      startProgress(videoDuration);
+      scheduleNextSlide(videoDuration);
+      mediaElement.play().catch(() => {});
+    };
+
+    if (mediaElement.readyState >= 1) {
+      syncVideoDuration();
+    } else {
+      mediaElement.addEventListener('loadedmetadata', syncVideoDuration, { once: true });
+    }
+  }
 
   refs.slide.classList.remove('is-active');
   window.requestAnimationFrame(() => refs.slide.classList.add('is-active'));
@@ -242,22 +335,12 @@ function nextSlide() {
   renderSlide(currentIndex);
 }
 
-function startAutoAdvance() {
-  window.clearInterval(intervalId);
-
-  if (!isPaused()) {
-    intervalId = window.setInterval(nextSlide, slideDurationMs);
-  }
-}
-
 renderSlide(currentIndex);
-startAutoAdvance();
 
 document.addEventListener('visibilitychange', () => {
-  window.clearInterval(intervalId);
+  window.clearTimeout(advanceTimeoutId);
 
   if (document.visibilityState === 'visible') {
     renderSlide(currentIndex);
-    startAutoAdvance();
   }
 });
