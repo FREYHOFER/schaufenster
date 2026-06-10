@@ -1,4 +1,4 @@
-// Aktualisiert am 08.06.2026: 10 neuere Titel aus den Ladenfotos, plus lokale Instagram-Videos.
+// Aktualisiert am 08.06.2026: 10 neuere Titel aus den Ladenfotos.
 export const slideDurationMs = 42000;
 
 const instagramVideos = [
@@ -19,7 +19,6 @@ function bookSlide({
   author,
   focus,
   note,
-  source,
   palette,
   symbol,
   isbn,
@@ -34,7 +33,6 @@ function bookSlide({
     author,
     focus,
     note,
-    source,
     palette,
     symbol,
     isbn,
@@ -79,7 +77,6 @@ const bookSlides = [
       'Virale Videos erschüttern die Politik: Eine Frau behauptet, eine Affäre mit dem Kanzler gehabt zu haben. Kurz darauf verschwindet Henrik Westphal, und Art Mayer findet im Berliner U-Bahn-Tunnel eine entstellte Leiche.',
     note:
       'Ein Art-Mayer-Thriller mit politischem Druck, alten Verletzungen und der Frage, wem man noch trauen kann.',
-    source: 'Ullstein / Fotoauswahl',
     palette: ['#f0df58', '#26301c'],
     symbol: 'MR',
     isbn: '9783864933653',
@@ -93,7 +90,6 @@ const bookSlides = [
       'Bruno entdeckt bei einem verfallenen Schloss ein Grab mit drei Skeletten aus Kriegszeiten. Während er alten Verbrechen nachgeht, droht in Saint-Denis neues Chaos durch Hochwasser und politische Gäste.',
     note:
       'Südfrankreich, Geschichte und Dorfpolizei: ein ruhiger Krimi mit dunklem Kern.',
-    source: 'Diogenes / Fotoauswahl',
     palette: ['#d8e6d3', '#53765b'],
     symbol: 'MW',
     isbn: '9783257248432',
@@ -107,7 +103,6 @@ const bookSlides = [
       'An einem Sommertag verschwindet die vierjährige Poppy in Oxford. DI Ray Wilkins ermittelt offiziell, während sein suspendierter Ex-Partner Ryan auf eigene Faust in die Unterwelt abtaucht.',
     note:
       'Britischer Ermittlerkrimi mit einem ungleichen Duo und einer Suche gegen die Zeit.',
-    source: 'Penguin / Goldmann',
     palette: ['#202623', '#64b47b'],
     symbol: 'OX',
     isbn: '9783442495658',
@@ -121,7 +116,6 @@ const bookSlides = [
       'Eine Polizistin sucht nach Antworten zum Tod ihres Mannes, eine Staatsanwältin verfolgt Cum-Ex-Spuren, und drei alte Freunde geraten mit riskanten Aktiengeschäften immer tiefer in die Grauzone.',
     note:
       'Politisch brisanter Kriminalroman über Gier, Schuld und die Rechnung, die irgendwann fällig wird.',
-    source: 'DuMont / Fotoauswahl',
     palette: ['#1d2228', '#f0f3f5'],
     symbol: 'OB',
     isbn: '9783832181482',
@@ -136,7 +130,6 @@ const bookSlides = [
       'Als Henry Clayton an den Seven Sisters stirbt, glaubt die Polizei an Selbstmord. Seine Therapeutin Pat Philipps ist sicher: Henry wurde gestoßen. Also stellt sie selbst die Fragen, die andere meiden.',
     note:
       'Ein Cosy-Krimi mit psychologischem Blick, britischer Küste und einer Ermittlerin, die Menschen lesen kann.',
-    source: 'Ullstein / Fotoauswahl',
     palette: ['#f2f1df', '#d85a54'],
     symbol: 'PP',
     isbn: '9783864933905',
@@ -150,7 +143,6 @@ const bookSlides = [
       'Isabelle Bonnet liebt schnelle Autos, doch bei einer Rallye in der Provence bleibt es nicht beim Adrenalin. Zwischen Motoren, Rivalitäten und Urlaubsidylle muss sie einen tödlichen Fall entwirren.',
     note:
       'Sommerlicher Provence-Krimi für alle, die Spannung gern mit Sonne, Tempo und französischem Flair lesen.',
-    source: 'Droemer Knaur / Fotoauswahl',
     palette: ['#a66b45', '#426f82'],
     symbol: 'PM',
     isbn: '9783426529966',
@@ -164,7 +156,6 @@ const bookSlides = [
       'Bruno findet ein verlassenes Auto und darin eine tote Frau. Was wie Selbstmord aussehen soll, führt ihn zu alten Beziehungen, einem schwarzen Schaf in der Gendarmerie und Gefahr für den eigenen Ruf.',
     note:
       'Der achtzehnte Bruno-Fall verbindet Périgord-Atmosphäre, leise Komik und klassische Ermittlungsarbeit.',
-    source: 'Diogenes / Fotoauswahl',
     palette: ['#e9ead8', '#3c6a40'],
     symbol: 'BR',
     isbn: '9783257073843',
@@ -178,7 +169,6 @@ const bookSlides = [
       'Tommi und Svetlana hören im Radio einen Reiseruf, kurz darauf sehen sie den gesuchten Wagen. Die Fahrerin ist verschwunden, und aus einer Rastplatzspur wird ein abgründig komischer Kriminalfall.',
     note:
       'Schräger Humor, Caravan-Ermittlungen und zwei Figuren, die sich hartnäckig in jedes Chaos hineinziehen.',
-    source: 'Penguin / Fotoauswahl',
     palette: ['#e89a5b', '#24394a'],
     symbol: 'VK',
     isbn: '9783328603580',
@@ -192,7 +182,6 @@ const bookSlides = [
       'Kurz vor dem großen Fado-Festival verschwindet die gefeierte Sängerin Dária Vale. Henrik Falkner und Helena Gomes folgen Spuren durch Lissabons Gassen, bis Musik, Macht und Politik gefährlich nah rücken.',
     note:
       'Lissabon-Krimi mit Fado, Tempo und einer Verschwörung, die mehr bedroht als nur ein Festival.',
-    source: 'Penguin / Heyne',
     palette: ['#2f3f47', '#d7a06d'],
     symbol: 'LS',
     isbn: '9783453442498',
@@ -206,7 +195,6 @@ const bookSlides = [
       'In Schonen wird Gunni Hilding 1989 zu den Gewaltverbrechen geholt. Ein neuer Fall legt alte Spuren frei und wirft die Frage auf, ob ein Serientäter viel zu lange unentdeckt geblieben ist.',
     note:
       'Skandinavische Spannung mit klassischer Ermittlungsarbeit, Familiengeheimnissen und langsam wachsendem Druck.',
-    source: 'Penguin / Blanvalet',
     palette: ['#ece6d3', '#b7aa31'],
     symbol: 'TE',
     isbn: '9783764510152',
@@ -214,26 +202,4 @@ const bookSlides = [
   })
 ];
 
-const instagramSlides = instagramVideos.map(instagramMoment);
-
-export const slides = [
-  bookSlides[0],
-  bookSlides[1],
-  instagramSlides[0],
-  bookSlides[2],
-  bookSlides[3],
-  instagramSlides[1],
-  bookSlides[4],
-  instagramSlides[2],
-  bookSlides[5],
-  bookSlides[6],
-  instagramSlides[3],
-  bookSlides[7],
-  instagramSlides[4],
-  bookSlides[8],
-  instagramSlides[5],
-  bookSlides[9],
-  instagramSlides[6],
-  instagramSlides[7],
-  instagramSlides[8]
-];
+export const slides = [...bookSlides];

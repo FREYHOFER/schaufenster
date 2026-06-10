@@ -13,7 +13,7 @@ assert(slides.length >= 8, 'slideshow should contain at least 8 slides');
 assert(slideDurationMs >= 20000, 'slides should stay visible long enough for shop-window reading');
 
 slides.forEach((slide, index) => {
-  for (const field of ['type', 'eyebrow', 'title', 'author', 'source', 'symbol']) {
+  for (const field of ['type', 'eyebrow', 'title', 'author', 'symbol']) {
     assert(typeof slide[field] === 'string' && slide[field].trim(), `slide ${index + 1} is missing ${field}`);
   }
 
@@ -45,7 +45,9 @@ slides.forEach((slide, index) => {
 
 const bookCount = slides.filter((slide) => slide.type === 'book').length;
 const instagramCount = slides.filter((slide) => slide.type === 'instagram').length;
+const videoCount = slides.filter((slide) => slide.media?.kind === 'video').length;
 assert(bookCount >= 10, 'show at least 10 book slides');
-assert(instagramCount >= 2, 'add Instagram slides occasionally');
+assert(instagramCount === 0, 'keep Instagram slides disabled for the live version');
+assert(videoCount === 0, 'keep video slides disabled for the live version');
 
 console.log(`Validated ${slides.length} slides, including ${bookCount} books and ${instagramCount} Instagram moments.`);

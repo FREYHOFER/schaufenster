@@ -11,9 +11,6 @@ const refs = {
   author: document.querySelector('#author'),
   focus: document.querySelector('#focus'),
   note: document.querySelector('#note'),
-  source: document.querySelector('#source'),
-  counter: document.querySelector('#counter'),
-  progressBar: document.querySelector('#progressBar'),
   previousSlide: document.querySelector('#previousSlide'),
   nextSlide: document.querySelector('#nextSlide')
 };
@@ -22,7 +19,6 @@ const params = new URLSearchParams(window.location.search);
 
 let currentIndex = getInitialIndex();
 let advanceTimeoutId;
-let progressAnimation;
 let particleAnimationTimerId;
 
 function normalizeIndex(index) {
@@ -220,6 +216,42 @@ function setOptionalText(ref, value) {
   ref.hidden = !value;
 }
 
+function setClampedText(ref, value) {
+  setOptionalText(ref, value);
+
+  if (!value) {
+    ref.removeAttribute('title');
+    return;
+  }
+
+  const fullText = value.trim();
+  ref.textContent = fullText;
+  ref.removeAttribute('title');
+
+  if (ref.scrollHeight <= ref.clientHeight + 1) {
+    return;
+  }
+
+  let low = 0;
+  let high = fullText.length;
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    ref.textContent = `${fullText.slice(0, mid).trimEnd()}...`;
+
+    if (ref.scrollHeight <= ref.clientHeight + 1) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  const hardClip = fullText.slice(0, Math.max(0, high)).trimEnd();
+  const wordClip = hardClip.replace(/\s+\S*$/, '').trimEnd();
+  ref.textContent = `${wordClip || hardClip}...`;
+  ref.title = fullText;
+}
+
 function getSlideDuration(slide) {
   return slide.durationMs || slideDurationMs;
 }
@@ -247,25 +279,6 @@ function syncUrlToSlide(index) {
   const query = params.toString();
   const nextUrl = `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`;
   window.history.replaceState(null, '', nextUrl);
-}
-
-function startProgress(durationMs) {
-  refs.root.style.setProperty('--duration', `${durationMs}ms`);
-  progressAnimation?.cancel();
-
-  refs.progressBar.style.transform = 'scaleX(0)';
-
-  if (isPaused()) {
-    return;
-  }
-
-  progressAnimation = refs.progressBar.animate(
-    [
-      { transform: 'scaleX(0)' },
-      { transform: 'scaleX(1)' }
-    ],
-    { duration: durationMs, easing: 'linear', fill: 'forwards' }
-  );
 }
 
 function seededValue(seed) {
@@ -371,20 +384,16 @@ function renderSlide(index) {
   setOptionalText(refs.kicker, slide.kicker);
   refs.title.textContent = slide.title;
   refs.author.textContent = slide.author;
-  setOptionalText(refs.focus, slide.focus);
+  setClampedText(refs.focus, slide.focus);
   setOptionalText(refs.note, slide.note);
-  refs.source.textContent = slide.source;
-  refs.counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
   renderParticles(slide, index);
   const mediaElement = renderVisual(slide);
 
-  startProgress(baseDuration);
   scheduleNextSlide(baseDuration);
 
   if (mediaElement instanceof HTMLVideoElement) {
     const syncVideoDuration = () => {
       const videoDuration = getVideoDuration(mediaElement, baseDuration);
-      startProgress(videoDuration);
       scheduleNextSlide(videoDuration);
       mediaElement.play().catch(() => {});
     };
