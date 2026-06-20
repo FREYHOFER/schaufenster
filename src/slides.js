@@ -295,7 +295,7 @@ const hartmutBozmannSlide = textSlide({
   author: 'Literaturabend im Büchereck',
   focus:
     'Hartmut Bozmann kommt ins Schnelsener Büchereck. Fragt uns im Laden nach dem Termin und freien Plätzen.',
-  note: 'Public Viewing ist rausgenommen, weil es heute bereits vorbei ist.',
+  note: 'Anmeldung und Details direkt bei uns im Laden.',
   palette: ['#e4edf4', '#4e7393'],
   symbol: '✍',
   durationMs: 34000
