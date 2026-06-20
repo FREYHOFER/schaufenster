@@ -1,4 +1,4 @@
-// Aktualisiert am 19.06.2026: Manga, Young Adult und Kinderbuch im Fokus.
+// Aktualisiert am 20.06.2026: Schaufenster-Sprüche und kommende Lesungen wieder ergänzt.
 export const slideDurationMs = 42000;
 
 const instagramVideos = [
@@ -54,7 +54,7 @@ function textSlide({
   note,
   palette,
   symbol,
-  durationMs = 26000
+  durationMs = 30000
 }) {
   return {
     type,
@@ -104,7 +104,7 @@ const bookSlides = [
     note:
       'Der Start des Elban-Arcs: große Abenteuer, viel Witz und echte Gefühle für Fans ab 10 Jahren.',
     palette: ['#f3d459', '#317d9c'],
-    symbol: 'OP',
+    symbol: '☠',
     isbn: '9783551804976',
     durationMs: 42000
   }),
@@ -117,7 +117,7 @@ const bookSlides = [
     note:
       'Rasante Actionkomödie um einen Auftragskiller im Fast-Ruhestand – passend zum Anime-Hype.',
     palette: ['#f4c94c', '#333948'],
-    symbol: 'SD',
+    symbol: '⚡',
     isbn: '9783551808165',
     durationMs: 41000
   }),
@@ -130,7 +130,7 @@ const bookSlides = [
     note:
       'Warmherzige Mischung aus Romance, Schulalltag, Basketball und Badminton – ab 12 Jahren.',
     palette: ['#d7edf4', '#4e7fac'],
-    symbol: 'BB',
+    symbol: '♡',
     isbn: '9783551807076',
     durationMs: 40000
   }),
@@ -143,7 +143,7 @@ const bookSlides = [
     note:
       'Ein frischer Serienstart zwischen Action, Comedy und Slice of Life für Leser*innen ab 12.',
     palette: ['#f4df68', '#552f5b'],
-    symbol: 'SU',
+    symbol: '忍',
     isbn: '9783551808240',
     durationMs: 40000
   }),
@@ -156,7 +156,7 @@ const bookSlides = [
     note:
       'Knistern, Gefahr und verfeindete Welten: ein zugänglicher Romantasy-Auftakt ab 16 Jahren.',
     palette: ['#23364b', '#d39b67'],
-    symbol: 'WK',
+    symbol: '🐺',
     isbn: '9783551586759',
     durationMs: 42000
   }),
@@ -169,7 +169,7 @@ const bookSlides = [
     note:
       'Enemies-to-Lovers, Wettkampf und Rebellion: der bewährte Einstieg in die Powerless-Trilogie.',
     palette: ['#ece7df', '#31403c'],
-    symbol: 'PW',
+    symbol: '♛',
     isbn: '9783764533182',
     durationMs: 41000
   }),
@@ -182,7 +182,7 @@ const bookSlides = [
     note:
       'Magie, Verrat und verbotene Gefühle in einer Standalone-Romantasy ab 14 Jahren.',
     palette: ['#1d4b46', '#d9aa6a'],
-    symbol: 'ES',
+    symbol: '🐍',
     isbn: '9783551587251',
     durationMs: 42000
   }),
@@ -195,7 +195,7 @@ const bookSlides = [
     note:
       'Poetische Spannung, Londoner Flussmagie und zwei Kinder auf der Suche nach einem unbezahlbaren Schatz.',
     palette: ['#123d49', '#d7b85f'],
-    symbol: 'JM',
+    symbol: '☼',
     isbn: '9783551559609',
     durationMs: 41000
   }),
@@ -208,7 +208,7 @@ const bookSlides = [
     note:
       'Schlaue, wilde Vorlesegeschichten mit MINT-Ideen und dem typischen Kling-Humor.',
     palette: ['#efe6c8', '#ef6c4d'],
-    symbol: 'NB',
+    symbol: '⚙',
     isbn: '9783551522801',
     durationMs: 40000
   }),
@@ -221,57 +221,99 @@ const bookSlides = [
     note:
       'Gefühle und Gemeinschaft werden sichtbar, besprechbar und wunderbar vorlesbar.',
     palette: ['#e8f0d3', '#6cae5c'],
-    symbol: 'WIR',
+    symbol: '♡',
     isbn: '9783551523860',
     durationMs: 39000
   })
 ];
 
-const eventSlide = textSlide({
-  type: 'event',
-  eyebrow: 'Veranstaltungen',
-  title: 'Was ist los im Büchereck?',
-  author: 'Lesungen · Kinderbuchkino · Buchclub',
+const quickOrderSlide = textSlide({
+  eyebrow: 'Service',
+  title: 'Schnellste Bücher der Stadt?',
+  author: 'Heute bestellen. Morgen abholen.',
   focus:
-    'Unsere nächsten Termine bekommt ihr direkt im Laden und auf Instagram. Fragt uns gern nach freien Plätzen und Anmeldung.',
-  note: '@schnelsener_buechereck',
+    'Viele lieferbare Titel sind über Nacht da. Nennt uns einfach Titel, Autor*in oder ISBN – wir prüfen Verfügbarkeit und bestellen direkt.',
+  note: 'Persönlich im Laden, schnell und unkompliziert.',
+  palette: ['#e8eee5', '#4c7464'],
+  symbol: '↗',
+  durationMs: 32000
+});
+
+const cornerBooksSlide = textSlide({
+  eyebrow: 'Schnelsen',
+  title: 'Eckbücher um die Ecke',
+  author: 'Schnelsener Büchereck',
+  focus:
+    'Gute Bücher müssen nicht weit weg sein. Kommt kurz rein, entdeckt Neues im Regal oder lasst euch euren Wunschtitel bestellen.',
+  note: 'Direkt im Viertel. Direkt persönlich.',
   palette: ['#f0dfcf', '#b55f45'],
-  symbol: 'KAL',
+  symbol: '⌂',
   durationMs: 30000
 });
 
-const serviceSlide = textSlide({
-  eyebrow: 'Service',
-  title: 'Nicht im Regal?',
-  author: 'Wir bestellen euren Wunschtitel',
+const readAgainSlide = textSlide({
+  eyebrow: 'Schaufenster-Gedanke',
+  title: 'Lies mal wieder.',
+  author: 'Ein Buch passt immer in den Tag.',
   focus:
-    'Sagt uns Titel, Autor*in oder ISBN. Wir prüfen die Verfügbarkeit und nennen euch den passenden Abholtermin.',
-  note: 'Persönlich im Laden – schnell und unkompliziert.',
-  palette: ['#e8eee5', '#4c7464'],
-  symbol: 'ABC'
+    'Fünf Minuten im Bus, eine Stunde auf dem Sofa oder ein ganzer Abend ohne Bildschirm: Das nächste Buch wartet schon.',
+  note: 'Wir helfen beim Finden.',
+  palette: ['#f3e7df', '#b96f62'],
+  symbol: '☕',
+  durationMs: 30000
 });
 
-const giftSlide = textSlide({
-  eyebrow: 'Geschenkidee',
-  title: 'Schöne Bücher. Schön verpackt.',
-  author: 'Persönliche Empfehlungen für jedes Alter',
+const diogenesSlide = textSlide({
+  eyebrow: 'Diogenes-Moment',
+  title: 'Krimis mit Ruhe. Bücher mit Stimme.',
+  author: 'Für alle, die gerne atmosphärisch lesen',
   focus:
-    'Erzählt uns, für wen ihr sucht und was die Person gern liest. Wir helfen beim Aussuchen und machen das Geschenk fertig.',
-  note: 'Mit Zeit, Geschmack und einer guten Portion Buchliebe.',
-  palette: ['#f3e7df', '#b96f62'],
-  symbol: 'GUT'
+    'Ob Bruno im Périgord, leise Spannung oder literarische Entdeckung: Manchmal reicht ein gutes Buch, um sofort woanders zu sein.',
+  note: 'Fragt uns nach passenden Diogenes-Titeln im Laden.',
+  palette: ['#e9ead8', '#3c6a40'],
+  symbol: '◆',
+  durationMs: 32000
+});
+
+const reading26Slide = textSlide({
+  type: 'event',
+  eyebrow: 'Lesung',
+  title: 'Lesung am 26. Juni',
+  author: 'Im Schnelsener Büchereck',
+  focus:
+    'Merkt euch den 26. Juni vor. Weitere Infos, Uhrzeit und Anmeldung bekommt ihr direkt im Laden oder auf Instagram.',
+  note: '@schnelsener_buechereck',
+  palette: ['#fff1d6', '#c57b42'],
+  symbol: '26',
+  durationMs: 34000
+});
+
+const hartmutBozmannSlide = textSlide({
+  type: 'event',
+  eyebrow: 'Veranstaltung',
+  title: 'Lesung mit Hartmut Bozmann',
+  author: 'Literaturabend im Büchereck',
+  focus:
+    'Hartmut Bozmann kommt ins Schnelsener Büchereck. Fragt uns im Laden nach dem Termin und freien Plätzen.',
+  note: 'Public Viewing ist rausgenommen, weil es heute bereits vorbei ist.',
+  palette: ['#e4edf4', '#4e7393'],
+  symbol: '✍',
+  durationMs: 34000
 });
 
 export const slides = [
+  quickOrderSlide,
   bookSlides[0],
+  cornerBooksSlide,
   bookSlides[1],
-  serviceSlide,
+  reading26Slide,
   bookSlides[2],
+  readAgainSlide,
   bookSlides[3],
-  eventSlide,
   bookSlides[4],
+  hartmutBozmannSlide,
   bookSlides[5],
-  giftSlide,
+  diogenesSlide,
   bookSlides[6],
   bookSlides[7],
   bookSlides[8],
