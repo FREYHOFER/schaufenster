@@ -20,6 +20,8 @@ const params = new URLSearchParams(window.location.search);
 let currentIndex = getInitialIndex();
 let advanceTimeoutId;
 let particleAnimationTimerId;
+let preloadTimerId;
+const imagePreloads = new Map();
 
 function normalizeIndex(index) {
   return ((index % slides.length) + slides.length) % slides.length;
@@ -82,16 +84,39 @@ function renderSymbol(slide) {
   refs.visual.textContent = slide.symbol;
 }
 
+function preloadImage(src, priority = 'low') {
+  if (!src || imagePreloads.has(src)) {
+    return;
+  }
+
+  const image = new Image();
+  image.decoding = 'async';
+  image.loading = 'eager';
+  image.fetchPriority = priority;
+  image.src = src;
+  imagePreloads.set(src, image);
+}
+
+function scheduleUpcomingImagePreloads(index) {
+  window.clearTimeout(preloadTimerId);
+  preloadTimerId = window.setTimeout(() => {
+    let queued = 0;
+
+    for (let offset = 1; offset < slides.length && queued < 3; offset += 1) {
+      const candidate = slides[normalizeIndex(index + offset)];
+
+      if (candidate.media?.kind === 'image' && candidate.media.src) {
+        preloadImage(candidate.media.src);
+        queued += 1;
+      }
+    }
+  }, 180);
+}
+
 function renderImage(slide) {
   const shell = document.createElement('div');
   shell.className = 'cover-shell';
-
-  const glow = document.createElement('img');
-  glow.className = 'cover-glow';
-  glow.src = slide.media.src;
-  glow.alt = '';
-  glow.decoding = 'async';
-  glow.loading = 'eager';
+  preloadImage(slide.media.src, 'high');
 
   const image = document.createElement('img');
   image.className = 'cover-image';
@@ -99,9 +124,10 @@ function renderImage(slide) {
   image.alt = slide.media.alt || `Cover von ${slide.title}`;
   image.decoding = 'async';
   image.loading = 'eager';
+  image.fetchPriority = 'high';
   image.addEventListener('error', () => renderSymbol(slide), { once: true });
 
-  shell.append(glow, image);
+  shell.append(image);
   refs.visual.append(shell);
 }
 
@@ -316,7 +342,7 @@ function animateHeatParticles(specs) {
   };
 
   animate();
-  particleAnimationTimerId = window.setInterval(animate, 33);
+  particleAnimationTimerId = window.setInterval(animate, 50);
 }
 
 function renderParticles(slide, index) {
@@ -327,7 +353,7 @@ function renderParticles(slide, index) {
   field.className = 'particles';
   field.setAttribute('aria-hidden', 'true');
 
-  const count = slide.type === 'book' ? 96 : 58;
+  const count = slide.type === 'book' ? 42 : 24;
   const colors = slide.palette;
   const specs = [];
 
@@ -373,12 +399,16 @@ function renderSlide(index) {
   const slide = slides[index];
   const [from, to] = slide.palette;
   const baseDuration = getSlideDuration(slide);
+  const isLight = slide.theme === 'light';
 
   refs.root.style.setProperty('--accent-from', from);
   refs.root.style.setProperty('--accent-to', to);
+  refs.root.style.setProperty('--text', isLight ? '#20231f' : '#fffaf2');
+  refs.root.style.setProperty('--muted', isLight ? 'rgba(32, 35, 31, 0.68)' : 'rgba(255, 250, 242, 0.7)');
   syncUrlToSlide(index);
 
   refs.slide.dataset.type = slide.type;
+  refs.slide.dataset.theme = slide.theme || 'dark';
   refs.slide.dataset.media = slide.media?.kind || 'symbol';
   refs.eyebrow.textContent = slide.eyebrow;
   setOptionalText(refs.kicker, slide.kicker);
@@ -388,6 +418,7 @@ function renderSlide(index) {
   setOptionalText(refs.note, slide.note);
   renderParticles(slide, index);
   const mediaElement = renderVisual(slide);
+  scheduleUpcomingImagePreloads(index);
 
   scheduleNextSlide(baseDuration);
 

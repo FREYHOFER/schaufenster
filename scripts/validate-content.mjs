@@ -17,7 +17,7 @@ slides.forEach((slide, index) => {
     assert(typeof slide[field] === 'string' && slide[field].trim(), `slide ${index + 1} is missing ${field}`);
   }
 
-  assert(['book', 'instagram'].includes(slide.type), `slide ${index + 1} has an unsupported type`);
+  assert(['book', 'instagram', 'event', 'info'].includes(slide.type), `slide ${index + 1} has an unsupported type`);
   assert(Array.isArray(slide.palette) && slide.palette.length === 2, `slide ${index + 1} needs two palette colors`);
   assert(!slide.durationMs || slide.durationMs >= 15000, `slide ${index + 1} duration is too short`);
   assert(typeof slide.focus === 'string', `slide ${index + 1} focus must be a string`);
@@ -45,9 +45,15 @@ slides.forEach((slide, index) => {
 
 const bookCount = slides.filter((slide) => slide.type === 'book').length;
 const instagramCount = slides.filter((slide) => slide.type === 'instagram').length;
+const eventCount = slides.filter((slide) => slide.type === 'event').length;
+const infoCount = slides.filter((slide) => slide.type === 'info').length;
 const videoCount = slides.filter((slide) => slide.media?.kind === 'video').length;
 assert(bookCount >= 10, 'show at least 10 book slides');
+assert(eventCount >= 1, 'show at least one event slide');
+assert(infoCount >= 2, 'show at least two information slides');
 assert(instagramCount === 0, 'keep Instagram slides disabled for the live version');
 assert(videoCount === 0, 'keep video slides disabled for the live version');
 
-console.log(`Validated ${slides.length} slides, including ${bookCount} books and ${instagramCount} Instagram moments.`);
+console.log(
+  `Validated ${slides.length} slides: ${bookCount} books, ${eventCount} event and ${infoCount} information slides.`
+);

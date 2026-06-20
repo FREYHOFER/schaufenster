@@ -45,6 +45,32 @@ function bookSlide({
   };
 }
 
+function textSlide({
+  type = 'info',
+  eyebrow,
+  title,
+  author,
+  focus,
+  note,
+  palette,
+  symbol,
+  durationMs = 26000
+}) {
+  return {
+    type,
+    theme: 'light',
+    eyebrow,
+    kicker: '',
+    title,
+    author,
+    focus,
+    note,
+    palette,
+    symbol,
+    durationMs
+  };
+}
+
 function instagramMoment([shortcode, palette], index) {
   return {
     type: 'instagram',
@@ -201,4 +227,53 @@ const bookSlides = [
   })
 ];
 
-export const slides = [...bookSlides];
+const eventSlide = textSlide({
+  type: 'event',
+  eyebrow: 'Veranstaltungen',
+  title: 'Was ist los im Büchereck?',
+  author: 'Lesungen · Kinderbuchkino · Buchclub',
+  focus:
+    'Unsere nächsten Termine bekommt ihr direkt im Laden und auf Instagram. Fragt uns gern nach freien Plätzen und Anmeldung.',
+  note: '@schnelsener_buechereck',
+  palette: ['#f0dfcf', '#b55f45'],
+  symbol: 'KAL',
+  durationMs: 30000
+});
+
+const serviceSlide = textSlide({
+  eyebrow: 'Service',
+  title: 'Nicht im Regal?',
+  author: 'Wir bestellen euren Wunschtitel',
+  focus:
+    'Sagt uns Titel, Autor*in oder ISBN. Wir prüfen die Verfügbarkeit und nennen euch den passenden Abholtermin.',
+  note: 'Persönlich im Laden – schnell und unkompliziert.',
+  palette: ['#e8eee5', '#4c7464'],
+  symbol: 'ABC'
+});
+
+const giftSlide = textSlide({
+  eyebrow: 'Geschenkidee',
+  title: 'Schöne Bücher. Schön verpackt.',
+  author: 'Persönliche Empfehlungen für jedes Alter',
+  focus:
+    'Erzählt uns, für wen ihr sucht und was die Person gern liest. Wir helfen beim Aussuchen und machen das Geschenk fertig.',
+  note: 'Mit Zeit, Geschmack und einer guten Portion Buchliebe.',
+  palette: ['#f3e7df', '#b96f62'],
+  symbol: 'GUT'
+});
+
+export const slides = [
+  bookSlides[0],
+  bookSlides[1],
+  serviceSlide,
+  bookSlides[2],
+  bookSlides[3],
+  eventSlide,
+  bookSlides[4],
+  bookSlides[5],
+  giftSlide,
+  bookSlides[6],
+  bookSlides[7],
+  bookSlides[8],
+  bookSlides[9]
+];
