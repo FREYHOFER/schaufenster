@@ -1,4 +1,4 @@
-// Aktualisiert am 08.06.2026: 10 neuere Titel aus den Ladenfotos.
+// Aktualisiert am 19.06.2026: Manga, Young Adult und Kinderbuch im Fokus.
 export const slideDurationMs = 42000;
 
 const instagramVideos = [
@@ -70,134 +70,133 @@ function instagramMoment([shortcode, palette], index) {
 
 const bookSlides = [
   bookSlide({
-    month: 'Neu seit 28. Mai 2026',
-    title: 'Im Morgengrauen',
-    author: 'Marc Raabe',
+    month: 'Manga · Neu seit 26. Mai 2026',
+    title: 'One Piece 112',
+    author: 'Eiichiro Oda',
     focus:
-      'Virale Videos erschüttern die Politik: Eine Frau behauptet, eine Affäre mit dem Kanzler gehabt zu haben. Kurz darauf verschwindet Henrik Westphal, und Art Mayer findet im Berliner U-Bahn-Tunnel eine entstellte Leiche.',
+      'Die Strohhutbande erreicht endlich Elban, die sagenumwobene Insel der Riesen. Robin erlebt ein lang ersehntes Wiedersehen, während eine mysteriöse Box und Ruffys nächste Herausforderung schon neues Chaos ankündigen.',
     note:
-      'Ein Art-Mayer-Thriller mit politischem Druck, alten Verletzungen und der Frage, wem man noch trauen kann.',
-    palette: ['#f0df58', '#26301c'],
-    symbol: 'MR',
-    isbn: '9783864933653',
+      'Der Start des Elban-Arcs: große Abenteuer, viel Witz und echte Gefühle für Fans ab 10 Jahren.',
+    palette: ['#f3d459', '#317d9c'],
+    symbol: 'OP',
+    isbn: '9783551804976',
     durationMs: 42000
   }),
   bookSlide({
-    month: 'Neu seit 20. Mai 2026',
-    title: 'Déjà-vu',
-    author: 'Martin Walker',
+    month: 'Manga · Neu ab 30. Juni 2026',
+    title: 'Sakamoto Days 22',
+    author: 'Yuto Suzuki',
     focus:
-      'Bruno entdeckt bei einem verfallenen Schloss ein Grab mit drei Skeletten aus Kriegszeiten. Während er alten Verbrechen nachgeht, droht in Saint-Denis neues Chaos durch Hochwasser und politische Gäste.',
+      'Tenkyu hat es auf die Wahrsagerin Atari abgesehen. Als Shin sieht, wie brutal sie verletzt wird, gerät das Familiencredo der Sakamotos ins Wanken: Kann er diejenigen schützen, die ihm wichtig sind, ohne zu töten?',
     note:
-      'Südfrankreich, Geschichte und Dorfpolizei: ein ruhiger Krimi mit dunklem Kern.',
-    palette: ['#d8e6d3', '#53765b'],
-    symbol: 'MW',
-    isbn: '9783257248432',
-    durationMs: 39000
+      'Rasante Actionkomödie um einen Auftragskiller im Fast-Ruhestand – passend zum Anime-Hype.',
+    palette: ['#f4c94c', '#333948'],
+    symbol: 'SD',
+    isbn: '9783551808165',
+    durationMs: 41000
   }),
   bookSlide({
-    month: 'Neu seit 13. Mai 2026',
-    title: 'Das kalte Herz von Oxford',
-    author: 'Simon Mason',
+    month: 'Manga · Neu seit 26. Mai 2026',
+    title: 'Blue Box 18',
+    author: 'Kouji Miura',
     focus:
-      'An einem Sommertag verschwindet die vierjährige Poppy in Oxford. DI Ray Wilkins ermittelt offiziell, während sein suspendierter Ex-Partner Ryan auf eigene Faust in die Unterwelt abtaucht.',
+      'Nach dem Inter High fährt Taikis Badminton-Team ans Meer. Doch Chinatsus Basketballclub trainiert ganz in der Nähe, und aus der erhofften Auszeit wird ein sommerlicher Bewährungstest für Sport und Gefühle.',
     note:
-      'Britischer Ermittlerkrimi mit einem ungleichen Duo und einer Suche gegen die Zeit.',
-    palette: ['#202623', '#64b47b'],
-    symbol: 'OX',
-    isbn: '9783442495658',
+      'Warmherzige Mischung aus Romance, Schulalltag, Basketball und Badminton – ab 12 Jahren.',
+    palette: ['#d7edf4', '#4e7fac'],
+    symbol: 'BB',
+    isbn: '9783551807076',
     durationMs: 40000
   }),
   bookSlide({
-    month: 'Neu im Mai 2026',
-    title: 'Die Summe aller Dinge',
-    author: 'Oliver Bottini',
+    month: 'Manga · Neustart am 30. Juni 2026',
+    title: 'Shinobi Undercover 1',
+    author: 'Ippon Takegushi & Santa Mitarashi',
     focus:
-      'Eine Polizistin sucht nach Antworten zum Tod ihres Mannes, eine Staatsanwältin verfolgt Cum-Ex-Spuren, und drei alte Freunde geraten mit riskanten Aktiengeschäften immer tiefer in die Grauzone.',
+      'Der junge Ninja Yodaka soll die schüchterne Aoi beschützen. Dafür muss er undercover an ihre Highschool – eine Mission, bei der Schulalltag, soziale Ängste und Ninja-Pflichten herrlich kollidieren.',
     note:
-      'Politisch brisanter Kriminalroman über Gier, Schuld und die Rechnung, die irgendwann fällig wird.',
-    palette: ['#1d2228', '#f0f3f5'],
-    symbol: 'OB',
-    isbn: '9783832181482',
-    coverExt: 'png',
+      'Ein frischer Serienstart zwischen Action, Comedy und Slice of Life für Leser*innen ab 12.',
+    palette: ['#f4df68', '#552f5b'],
+    symbol: 'SU',
+    isbn: '9783551808240',
+    durationMs: 40000
+  }),
+  bookSlide({
+    month: 'Young Adult · Neu seit 1. April 2026',
+    title: 'The Wolf King',
+    author: 'Lauren Palphreyman',
+    focus:
+      'Prinzessin Aurora soll einen grausamen Lord heiraten. Nachdem sie einem jungen Wolf das Leben rettet, entführt Alpha Callum sie in das wilde Land jenseits der Grenze – und mitten in einen Krieg zwischen Menschen und Werwolf-Clans.',
+    note:
+      'Knistern, Gefahr und verfeindete Welten: ein zugänglicher Romantasy-Auftakt ab 16 Jahren.',
+    palette: ['#23364b', '#d39b67'],
+    symbol: 'WK',
+    isbn: '9783551586759',
     durationMs: 42000
   }),
   bookSlide({
-    month: 'Neu seit 07. Mai 2026',
-    title: 'Die Therapeutin und ihre Mörder',
-    author: 'Philippa Perry',
+    month: 'Young Adult · BookTok-Favorit',
+    title: 'Powerless – Das Spiel',
+    author: 'Lauren Roberts',
     focus:
-      'Als Henry Clayton an den Seven Sisters stirbt, glaubt die Polizei an Selbstmord. Seine Therapeutin Pat Philipps ist sicher: Henry wurde gestoßen. Also stellt sie selbst die Fragen, die andere meiden.',
+      'Im Königreich Ilya zählen nur magische Kräfte. Paedyn hat keine – und gibt sich dennoch als Hellseherin aus. Als sie Prinz Kai rettet, landet sie ausgerechnet in den tödlichen Auswahlspielen des Königs.',
     note:
-      'Ein Cosy-Krimi mit psychologischem Blick, britischer Küste und einer Ermittlerin, die Menschen lesen kann.',
-    palette: ['#f2f1df', '#d85a54'],
-    symbol: 'PP',
-    isbn: '9783864933905',
+      'Enemies-to-Lovers, Wettkampf und Rebellion: der bewährte Einstieg in die Powerless-Trilogie.',
+    palette: ['#ece7df', '#31403c'],
+    symbol: 'PW',
+    isbn: '9783764533182',
     durationMs: 41000
   }),
   bookSlide({
-    month: 'Neu seit 04. Mai 2026',
-    title: 'Madame le Commissaire und die tödliche Rallye',
-    author: 'Pierre Martin',
+    month: 'Young Adult · Vorschau 31. August 2026',
+    title: 'Embrace the Serpent',
+    author: 'Sunya Mara',
     focus:
-      'Isabelle Bonnet liebt schnelle Autos, doch bei einer Rallye in der Provence bleibt es nicht beim Adrenalin. Zwischen Motoren, Rivalitäten und Urlaubsidylle muss sie einen tödlichen Fall entwirren.',
+      'Saphira kann die Magie aus Edelsteinen wecken und lebt damit im Verborgenen. Als der gefürchtete Schlangenkönig nach ihr suchen lässt, gerät sie zwischen ein gnadenloses Kaiserreich, einen rätselhaften Herrscher und dessen charmanten Jäger.',
     note:
-      'Sommerlicher Provence-Krimi für alle, die Spannung gern mit Sonne, Tempo und französischem Flair lesen.',
-    palette: ['#a66b45', '#426f82'],
-    symbol: 'PM',
-    isbn: '9783426529966',
-    durationMs: 38000
+      'Magie, Verrat und verbotene Gefühle in einer Standalone-Romantasy ab 14 Jahren.',
+    palette: ['#1d4b46', '#d9aa6a'],
+    symbol: 'ES',
+    isbn: '9783551587251',
+    durationMs: 42000
   }),
   bookSlide({
-    month: 'Neu seit 22. April 2026',
-    title: 'Bredouille',
-    author: 'Martin Walker',
+    month: 'Kinderbuch · Abenteuer ab 10',
+    title: 'Die Jagd nach den magischen Münzen',
+    author: 'Jessie Burton',
     focus:
-      'Bruno findet ein verlassenes Auto und darin eine tote Frau. Was wie Selbstmord aussehen soll, führt ihn zu alten Beziehungen, einem schwarzen Schaf in der Gendarmerie und Gefahr für den eigenen Ruf.',
+      'Bo findet im Schlamm der Themse eine schimmernde Münze und hört plötzlich den Fluss sprechen. Gemeinsam mit Billy sucht sie nach einer zweiten Münze – bevor der geheimnisvolle Muncaster sie ihnen wegschnappt.',
     note:
-      'Der achtzehnte Bruno-Fall verbindet Périgord-Atmosphäre, leise Komik und klassische Ermittlungsarbeit.',
-    palette: ['#e9ead8', '#3c6a40'],
-    symbol: 'BR',
-    isbn: '9783257073843',
-    durationMs: 39000
+      'Poetische Spannung, Londoner Flussmagie und zwei Kinder auf der Suche nach einem unbezahlbaren Schatz.',
+    palette: ['#123d49', '#d7b85f'],
+    symbol: 'JM',
+    isbn: '9783551559609',
+    durationMs: 41000
   }),
   bookSlide({
-    month: 'Neu seit 22. April 2026',
-    title: 'Mord ist die beste Beseitigung',
-    author: 'Volker Klüpfel',
+    month: 'Kinderbuch · Vorlesen ab 6',
+    title: 'Neon und Bor',
+    author: 'Marc-Uwe Kling & Jan Cronauer',
     focus:
-      'Tommi und Svetlana hören im Radio einen Reiseruf, kurz darauf sehen sie den gesuchten Wagen. Die Fahrerin ist verschwunden, und aus einer Rastplatzspur wird ein abgründig komischer Kriminalfall.',
+      'Neon und ihr hochbegabter Babybruder Bor lösen jedes Problem mit einer Erfindung: Aufräumroboter, Vergrößerungsblasenwerfer oder Zeitschleifenröhre. Dumm nur, dass jede Lösung meist ein noch größeres Problem baut.',
     note:
-      'Schräger Humor, Caravan-Ermittlungen und zwei Figuren, die sich hartnäckig in jedes Chaos hineinziehen.',
-    palette: ['#e89a5b', '#24394a'],
-    symbol: 'VK',
-    isbn: '9783328603580',
+      'Schlaue, wilde Vorlesegeschichten mit MINT-Ideen und dem typischen Kling-Humor.',
+    palette: ['#efe6c8', '#ef6c4d'],
+    symbol: 'NB',
+    isbn: '9783551522801',
     durationMs: 40000
   }),
   bookSlide({
-    month: 'Neu seit 16. April 2026',
-    title: 'Portugiesisches Fieber',
-    author: 'Luis Sellano',
+    month: 'Kinderbuch · Vorlesen ab 3',
+    title: 'Das große Buch vom kleinen WIR',
+    author: 'Daniela Kunkel',
     focus:
-      'Kurz vor dem großen Fado-Festival verschwindet die gefeierte Sängerin Dária Vale. Henrik Falkner und Helena Gomes folgen Spuren durch Lissabons Gassen, bis Musik, Macht und Politik gefährlich nah rücken.',
+      'Das kleine WIR entsteht, wenn Menschen zusammenhalten – in Freundschaften, Familien, Kindergarten und Schule. Der Sammelband bringt drei vollständige Bilderbuchgeschichten rund um das grüne Wuscheltier zusammen.',
     note:
-      'Lissabon-Krimi mit Fado, Tempo und einer Verschwörung, die mehr bedroht als nur ein Festival.',
-    palette: ['#2f3f47', '#d7a06d'],
-    symbol: 'LS',
-    isbn: '9783453442498',
-    durationMs: 41000
-  }),
-  bookSlide({
-    month: 'Neu seit 16. April 2026',
-    title: 'Tatort Trelleborg',
-    author: 'Mattias Edvardsson',
-    focus:
-      'In Schonen wird Gunni Hilding 1989 zu den Gewaltverbrechen geholt. Ein neuer Fall legt alte Spuren frei und wirft die Frage auf, ob ein Serientäter viel zu lange unentdeckt geblieben ist.',
-    note:
-      'Skandinavische Spannung mit klassischer Ermittlungsarbeit, Familiengeheimnissen und langsam wachsendem Druck.',
-    palette: ['#ece6d3', '#b7aa31'],
-    symbol: 'TE',
-    isbn: '9783764510152',
+      'Gefühle und Gemeinschaft werden sichtbar, besprechbar und wunderbar vorlesbar.',
+    palette: ['#e8f0d3', '#6cae5c'],
+    symbol: 'WIR',
+    isbn: '9783551523860',
     durationMs: 39000
   })
 ];

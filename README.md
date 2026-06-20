@@ -4,7 +4,7 @@ Ein bewusst reduzierter Prototyp für ein digitales Buchhandlungs-Schaufenster: 
 
 ## Inhalt
 
-- Zehn aktuelle Krimi- und Thriller-Neuheiten aus den Ladenfotos.
+- Zehn kuratierte Titel für ein jüngeres Publikum: vier Manga, drei Young-Adult- und drei Kinderbücher.
 - Ein Titel pro Slide mit Cover, Klappentext-Fassung und ruhiger Lesedauer.
 - Instagram-Momente aus lokalen Feed-Videos mit reduziertem Follow-Hinweis.
 - Dezente Pfeilnavigation und Tastatursteuerung: Die Präsentation läuft trotzdem wie eine ruhige Diashow.
