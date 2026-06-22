@@ -61,6 +61,31 @@ function posterSlide({ title, author = 'Diogenes Verlag', durationMs = 26000 }) 
   };
 }
 
+function collectionSlide({ eyebrow, title, author, focus, note, palette, symbol, books, durationMs = 40000 }) {
+  return {
+    type: 'collection',
+    eyebrow,
+    kicker: '',
+    title,
+    author,
+    focus,
+    note,
+    palette,
+    symbol,
+    durationMs,
+    media: {
+      kind: 'collection',
+      items: books.map((book) => ({
+        title: book.title,
+        author: book.author,
+        label: book.eyebrow.split('·').slice(1).join('·').trim(),
+        src: book.media.src,
+        alt: book.media.alt
+      }))
+    }
+  };
+}
+
 function instagramMoment([shortcode, palette], index) {
   return {
     type: 'instagram',
@@ -236,6 +261,30 @@ const canYouReadSlide = posterSlide({
   author: 'Schnelsener Büchereck'
 });
 
+const mangaCollectionSlide = collectionSlide({
+  eyebrow: 'Manga',
+  title: 'Manga auf einen Blick',
+  author: 'Vier aktuelle Tipps',
+  focus: 'Action, Romance und ein brandneuer Serienstart – vier Titel zum Entdecken.',
+  note: 'Alle vier Titel findet ihr bei uns im Laden.',
+  palette: ['#f4c94c', '#4e7fac'],
+  symbol: '漫',
+  books: bookSlides.slice(0, 4),
+  durationMs: 43000
+});
+
+const youngAdultCollectionSlide = collectionSlide({
+  eyebrow: 'Young Adult',
+  title: 'Young Adult auf einen Blick',
+  author: 'Drei Romantasy-Favoriten',
+  focus: 'Magie, Gefahr und große Gefühle – drei Welten zwischen Rebellion und dunklen Bündnissen.',
+  note: 'Für Leser*innen ab 14 und 16 Jahren.',
+  palette: ['#b88fc6', '#31403c'],
+  symbol: 'YA',
+  books: bookSlides.slice(4, 7),
+  durationMs: 41000
+});
+
 const groupsSlide = {
   type: 'community',
   eyebrow: 'Raum für Ideen',
@@ -257,6 +306,7 @@ const groupsSlide = {
 
 export const slides = [
   everyDaySlide,
+  mangaCollectionSlide,
   bookSlides[0],
   groupsSlide,
   bookSlides[1],
@@ -264,6 +314,7 @@ export const slides = [
   bookSlides[2],
   readAgainSlide,
   bookSlides[3],
+  youngAdultCollectionSlide,
   bookSlides[4],
   canYouReadSlide,
   bookSlides[5],

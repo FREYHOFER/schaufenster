@@ -97,16 +97,29 @@ function preloadImage(src, priority = 'low') {
   imagePreloads.set(src, image);
 }
 
+function getSlideImageSources(slide) {
+  if (slide.media?.kind === 'image' && slide.media.src) {
+    return [slide.media.src];
+  }
+
+  if (slide.media?.kind === 'collection') {
+    return slide.media.items.map((item) => item.src).filter(Boolean);
+  }
+
+  return [];
+}
+
 function scheduleUpcomingImagePreloads(index) {
   window.clearTimeout(preloadTimerId);
   preloadTimerId = window.setTimeout(() => {
     let queued = 0;
 
-    for (let offset = 1; offset < slides.length && queued < 3; offset += 1) {
+    for (let offset = 1; offset < slides.length && queued < 6; offset += 1) {
       const candidate = slides[normalizeIndex(index + offset)];
 
-      if (candidate.media?.kind === 'image' && candidate.media.src) {
-        preloadImage(candidate.media.src);
+      for (const src of getSlideImageSources(candidate)) {
+        if (queued >= 6) break;
+        preloadImage(src);
         queued += 1;
       }
     }
@@ -129,6 +142,53 @@ function renderImage(slide) {
 
   shell.append(image);
   refs.visual.append(shell);
+}
+
+function renderCollection(slide) {
+  const grid = document.createElement('section');
+  grid.className = 'collection-grid';
+  grid.setAttribute('aria-label', `${slide.title}: ${slide.media.items.length} Buchtipps`);
+  grid.style.setProperty('--collection-count', slide.media.items.length);
+
+  slide.media.items.forEach((item, index) => {
+    preloadImage(item.src, index === 0 ? 'high' : 'low');
+
+    const card = document.createElement('article');
+    card.className = 'collection-card';
+
+    const cover = document.createElement('div');
+    cover.className = 'collection-cover';
+
+    const image = document.createElement('img');
+    image.src = item.src;
+    image.alt = item.alt || `Cover von ${item.title}`;
+    image.decoding = 'async';
+    image.loading = 'eager';
+    image.fetchPriority = index === 0 ? 'high' : 'low';
+    image.addEventListener('error', () => card.classList.add('is-missing'), { once: true });
+
+    const details = document.createElement('div');
+    details.className = 'collection-details';
+
+    const label = document.createElement('p');
+    label.className = 'collection-label';
+    label.textContent = item.label;
+    label.hidden = !item.label;
+
+    const title = document.createElement('h2');
+    title.textContent = item.title;
+
+    const author = document.createElement('p');
+    author.className = 'collection-author';
+    author.textContent = item.author;
+
+    cover.append(image);
+    details.append(label, title, author);
+    card.append(cover, details);
+    grid.append(card);
+  });
+
+  refs.visual.append(grid);
 }
 
 function renderVideo(slide) {
@@ -212,6 +272,11 @@ function renderVisual(slide) {
 
   if (media?.kind === 'image' && media.src) {
     renderImage(slide);
+    return null;
+  }
+
+  if (media?.kind === 'collection' && media.items?.length) {
+    renderCollection(slide);
     return null;
   }
 
