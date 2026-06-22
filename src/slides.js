@@ -45,28 +45,18 @@ function bookSlide({
   };
 }
 
-function textSlide({
-  type = 'info',
-  eyebrow,
-  title,
-  author,
-  focus,
-  note,
-  palette,
-  symbol,
-  durationMs = 30000
-}) {
+function posterSlide({ title, author = 'Diogenes Verlag', durationMs = 26000 }) {
   return {
-    type,
-    theme: 'light',
-    eyebrow,
+    type: 'poster',
+    theme: 'poster',
+    eyebrow: 'Schaufenster-Spruch',
     kicker: '',
     title,
     author,
-    focus,
-    note,
-    palette,
-    symbol,
+    focus: '',
+    note: 'Schnelsener Büchereck, die Eckbuchhandlung um die Ecke.',
+    palette: ['#fbf9f4', '#111111'],
+    symbol: 'D',
     durationMs
   };
 }
@@ -119,6 +109,7 @@ const bookSlides = [
     palette: ['#f4c94c', '#333948'],
     symbol: '⚡',
     isbn: '9783551808165',
+    coverExt: 'png',
     durationMs: 41000
   }),
   bookSlide({
@@ -132,6 +123,7 @@ const bookSlides = [
     palette: ['#d7edf4', '#4e7fac'],
     symbol: '♡',
     isbn: '9783551807076',
+    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -145,6 +137,7 @@ const bookSlides = [
     palette: ['#f4df68', '#552f5b'],
     symbol: '忍',
     isbn: '9783551808240',
+    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -158,6 +151,7 @@ const bookSlides = [
     palette: ['#23364b', '#d39b67'],
     symbol: '🐺',
     isbn: '9783551586759',
+    coverExt: 'png',
     durationMs: 42000
   }),
   bookSlide({
@@ -184,6 +178,7 @@ const bookSlides = [
     palette: ['#1d4b46', '#d9aa6a'],
     symbol: '🐍',
     isbn: '9783551587251',
+    coverExt: 'png',
     durationMs: 42000
   }),
   bookSlide({
@@ -197,6 +192,7 @@ const bookSlides = [
     palette: ['#123d49', '#d7b85f'],
     symbol: '☼',
     isbn: '9783551559609',
+    coverExt: 'png',
     durationMs: 41000
   }),
   bookSlide({
@@ -210,6 +206,7 @@ const bookSlides = [
     palette: ['#efe6c8', '#ef6c4d'],
     symbol: '⚙',
     isbn: '9783551522801',
+    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -223,97 +220,53 @@ const bookSlides = [
     palette: ['#e8f0d3', '#6cae5c'],
     symbol: '♡',
     isbn: '9783551523860',
+    coverExt: 'png',
     durationMs: 39000
   })
 ];
 
-const quickOrderSlide = textSlide({
-  eyebrow: 'Service',
-  title: 'Schnellste Bücher der Stadt?',
-  author: 'Heute bestellen. Morgen abholen.',
-  focus:
-    'Viele lieferbare Titel sind über Nacht da. Nennt uns einfach Titel, Autor*in oder ISBN – wir prüfen Verfügbarkeit und bestellen direkt.',
-  note: 'Persönlich im Laden, schnell und unkompliziert.',
-  palette: ['#e8eee5', '#4c7464'],
-  symbol: '↗',
-  durationMs: 32000
+const everyDaySlide = posterSlide({ title: 'Jeder Tag hat eine Geschichte.' });
+
+const goodEndingSlide = posterSlide({ title: 'Gut Ding will ein Ende haben.' });
+
+const readAgainSlide = posterSlide({ title: 'Lies mal wieder.' });
+
+const canYouReadSlide = posterSlide({
+  title: 'Kannst du überhaupt noch lesen?',
+  author: 'Schnelsener Büchereck'
 });
 
-const cornerBooksSlide = textSlide({
-  eyebrow: 'Schnelsen',
-  title: 'Eckbücher um die Ecke',
-  author: 'Schnelsener Büchereck',
+const groupsSlide = {
+  type: 'community',
+  eyebrow: 'Raum für Ideen',
+  kicker: '',
+  title: 'Gruppen gesucht',
+  author: 'Unser Keller möchte genutzt werden',
   focus:
-    'Gute Bücher müssen nicht weit weg sein. Kommt kurz rein, entdeckt Neues im Regal oder lasst euch euren Wunschtitel bestellen.',
-  note: 'Direkt im Viertel. Direkt persönlich.',
-  palette: ['#f0dfcf', '#b55f45'],
-  symbol: '⌂',
-  durationMs: 30000
-});
-
-const readAgainSlide = textSlide({
-  eyebrow: 'Schaufenster-Gedanke',
-  title: 'Lies mal wieder.',
-  author: 'Ein Buch passt immer in den Tag.',
-  focus:
-    'Fünf Minuten im Bus, eine Stunde auf dem Sofa oder ein ganzer Abend ohne Bildschirm: Das nächste Buch wartet schon.',
-  note: 'Wir helfen beim Finden.',
-  palette: ['#f3e7df', '#b96f62'],
-  symbol: '☕',
-  durationMs: 30000
-});
-
-const diogenesSlide = textSlide({
-  eyebrow: 'Diogenes-Moment',
-  title: 'Krimis mit Ruhe. Bücher mit Stimme.',
-  author: 'Für alle, die gerne atmosphärisch lesen',
-  focus:
-    'Ob Bruno im Périgord, leise Spannung oder literarische Entdeckung: Manchmal reicht ein gutes Buch, um sofort woanders zu sein.',
-  note: 'Fragt uns nach passenden Diogenes-Titeln im Laden.',
-  palette: ['#e9ead8', '#3c6a40'],
-  symbol: '◆',
-  durationMs: 32000
-});
-
-const reading26Slide = textSlide({
-  type: 'event',
-  eyebrow: 'Lesung',
-  title: 'Lesung am 26. Juni',
-  author: 'Im Schnelsener Büchereck',
-  focus:
-    'Merkt euch den 26. Juni vor. Weitere Infos, Uhrzeit und Anmeldung bekommt ihr direkt im Laden oder auf Instagram.',
-  note: '@schnelsener_buechereck',
-  palette: ['#fff1d6', '#c57b42'],
-  symbol: '26',
-  durationMs: 34000
-});
-
-const hartmutBozmannSlide = textSlide({
-  type: 'event',
-  eyebrow: 'Veranstaltung',
-  title: 'Lesung mit Hartmut Bozmann',
-  author: 'Literaturabend im Büchereck',
-  focus:
-    'Hartmut Bozmann kommt ins Schnelsener Büchereck. Fragt uns im Laden nach dem Termin und freien Plätzen.',
-  note: 'Anmeldung und Details direkt bei uns im Laden.',
-  palette: ['#e4edf4', '#4e7393'],
-  symbol: '✍',
-  durationMs: 34000
-});
+    'Lesezirkel, Spielrunde, Schreibtreff, Manga-Club oder Nachbarschaftsgruppe: Wir suchen Menschen, die unten etwas Gutes anfangen wollen.',
+  note: 'Sprecht uns im Laden an, wenn ihr einen regelmäßigen Treff sucht.',
+  palette: ['#17140e', '#05070b'],
+  symbol: '↘',
+  durationMs: 34000,
+  media: {
+    kind: 'image',
+    src: '/media/community/groups-reference.png',
+    alt: 'Eine musizierende Gruppe im Keller des Schnelsener Bücherecks'
+  }
+};
 
 export const slides = [
-  quickOrderSlide,
+  everyDaySlide,
   bookSlides[0],
-  cornerBooksSlide,
+  groupsSlide,
   bookSlides[1],
-  reading26Slide,
+  goodEndingSlide,
   bookSlides[2],
   readAgainSlide,
   bookSlides[3],
   bookSlides[4],
-  hartmutBozmannSlide,
+  canYouReadSlide,
   bookSlides[5],
-  diogenesSlide,
   bookSlides[6],
   bookSlides[7],
   bookSlides[8],

@@ -349,6 +349,10 @@ function renderParticles(slide, index) {
   stopParticleAnimation();
   refs.slide.querySelector('.particles')?.remove();
 
+  if (slide.type === 'poster') {
+    return;
+  }
+
   const field = document.createElement('div');
   field.className = 'particles';
   field.setAttribute('aria-hidden', 'true');
@@ -399,7 +403,7 @@ function renderSlide(index) {
   const slide = slides[index];
   const [from, to] = slide.palette;
   const baseDuration = getSlideDuration(slide);
-  const isLight = slide.theme === 'light';
+  const isLight = slide.theme === 'light' || slide.theme === 'poster';
 
   refs.root.style.setProperty('--accent-from', from);
   refs.root.style.setProperty('--accent-to', to);
