@@ -1,4 +1,4 @@
-// Aktualisiert am 22.06.2026: Cover-Pfade auf vorhandene JPG-Dateien korrigiert.
+// Aktualisiert am 22.06.2026: Freigestellte PNG-Cover ohne weiße Ecken ergänzt.
 export const slideDurationMs = 42000;
 
 const instagramVideos = [
@@ -109,6 +109,7 @@ const bookSlides = [
     palette: ['#f4c94c', '#333948'],
     symbol: '⚡',
     isbn: '9783551808165',
+    coverExt: 'png',
     durationMs: 41000
   }),
   bookSlide({
@@ -122,6 +123,7 @@ const bookSlides = [
     palette: ['#d7edf4', '#4e7fac'],
     symbol: '♡',
     isbn: '9783551807076',
+    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -135,6 +137,7 @@ const bookSlides = [
     palette: ['#f4df68', '#552f5b'],
     symbol: '忍',
     isbn: '9783551808240',
+    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -148,6 +151,7 @@ const bookSlides = [
     palette: ['#23364b', '#d39b67'],
     symbol: '🐺',
     isbn: '9783551586759',
+    coverExt: 'png',
     durationMs: 42000
   }),
   bookSlide({
@@ -174,6 +178,7 @@ const bookSlides = [
     palette: ['#1d4b46', '#d9aa6a'],
     symbol: '🐍',
     isbn: '9783551587251',
+    coverExt: 'png',
     durationMs: 42000
   }),
   bookSlide({
@@ -187,6 +192,7 @@ const bookSlides = [
     palette: ['#123d49', '#d7b85f'],
     symbol: '☼',
     isbn: '9783551559609',
+    coverExt: 'png',
     durationMs: 41000
   }),
   bookSlide({
@@ -200,6 +206,7 @@ const bookSlides = [
     palette: ['#efe6c8', '#ef6c4d'],
     symbol: '⚙',
     isbn: '9783551522801',
+    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -213,6 +220,7 @@ const bookSlides = [
     palette: ['#e8f0d3', '#6cae5c'],
     symbol: '♡',
     isbn: '9783551523860',
+    coverExt: 'png',
     durationMs: 39000
   })
 ];

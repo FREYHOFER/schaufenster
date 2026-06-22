@@ -444,9 +444,7 @@ h1 {
   max-height: min(76vh, 54rem);
   border-radius: 0.35rem;
   object-fit: contain;
-  box-shadow:
-    0 1.4rem 2.6rem rgba(0, 0, 0, 0.38),
-    0 0 0 1px rgba(255, 255, 255, 0.12);
+  filter: drop-shadow(0 1.4rem 1.3rem rgba(0, 0, 0, 0.38));
 }
 
 .visual-video,
