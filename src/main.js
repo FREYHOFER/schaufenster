@@ -21,6 +21,7 @@ let currentIndex = getInitialIndex();
 let advanceTimeoutId;
 let particleAnimationTimerId;
 let preloadTimerId;
+let rendererMessageHandler;
 const imagePreloads = new Map();
 
 function normalizeIndex(index) {
@@ -98,6 +99,10 @@ function preloadImage(src, priority = 'low') {
 }
 
 function getSlideImageSources(slide) {
+  if (slide.media?.kind === 'book' && slide.media.coverSrc) {
+    return [slide.media.coverSrc];
+  }
+
   if (slide.media?.kind === 'image' && slide.media.src) {
     return [slide.media.src];
   }
@@ -107,6 +112,36 @@ function getSlideImageSources(slide) {
   }
 
   return [];
+}
+
+function renderBook(slide) {
+  const shell = document.createElement('div');
+  shell.className = 'book-renderer-shell';
+
+  const poster = document.createElement('img');
+  poster.className = 'book-renderer-poster';
+  poster.src = slide.media.coverSrc;
+  poster.alt = '';
+  poster.decoding = 'async';
+  poster.loading = 'eager';
+  poster.fetchPriority = 'high';
+
+  const frame = document.createElement('iframe');
+  frame.className = 'book-renderer';
+  frame.src = slide.media.src;
+  frame.title = `3D-Animation für ${slide.title}`;
+  frame.loading = 'eager';
+  frame.setAttribute('aria-label', slide.media.alt || `3D-Buch von ${slide.title}`);
+
+  rendererMessageHandler = (event) => {
+    if (event.source !== frame.contentWindow || event.origin !== window.location.origin) return;
+    if (event.data?.type === 'book-renderer-ready') frame.classList.add('is-ready');
+    if (event.data?.type === 'book-renderer-error') console.error('Book renderer failed:', event.data.message);
+  };
+  window.addEventListener('message', rendererMessageHandler);
+
+  shell.append(poster, frame);
+  refs.visual.append(shell);
 }
 
 function scheduleUpcomingImagePreloads(index) {
@@ -266,9 +301,18 @@ function renderInstagramPoster(slide) {
 
 function renderVisual(slide) {
   const media = slide.media;
+  if (rendererMessageHandler) {
+    window.removeEventListener('message', rendererMessageHandler);
+    rendererMessageHandler = null;
+  }
   refs.visual.replaceChildren();
   refs.visual.textContent = '';
   refs.visual.dataset.media = media?.kind || 'symbol';
+
+  if (media?.kind === 'book' && media.src && media.coverSrc) {
+    renderBook(slide);
+    return null;
+  }
 
   if (media?.kind === 'image' && media.src) {
     renderImage(slide);

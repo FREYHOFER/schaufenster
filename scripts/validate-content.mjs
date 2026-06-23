@@ -1,6 +1,6 @@
 import { slides, slideDurationMs } from '../src/slides.js';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -29,12 +29,30 @@ slides.forEach((slide, index) => {
     assert(typeof slide.kicker === 'string', `book slide ${index + 1} kicker must be a string`);
     assert(slide.focus.trim(), `book slide ${index + 1} is missing focus`);
     assert(slide.note.trim(), `book slide ${index + 1} is missing note`);
-    assert(slide.media?.kind === 'image', `book slide ${index + 1} needs image media`);
+    assert(slide.media?.kind === 'book', `book slide ${index + 1} needs 3D book media`);
     assert(typeof slide.media.src === 'string' && slide.media.src.trim(), `book slide ${index + 1} is missing media src`);
+    assert(typeof slide.media.coverSrc === 'string' && slide.media.coverSrc.trim(), `book slide ${index + 1} is missing its fallback cover`);
   }
 
   if (slide.media) {
-    assert(['image', 'collection', 'video', 'instagram'].includes(slide.media.kind), `slide ${index + 1} has unsupported media kind`);
+    assert(['book', 'image', 'collection', 'video', 'instagram'].includes(slide.media.kind), `slide ${index + 1} has unsupported media kind`);
+
+    if (slide.media.kind === 'book') {
+      for (const src of [slide.media.src.split('?')[0], slide.media.coverSrc]) {
+        const publicPath = join(process.cwd(), 'public', src.slice(1));
+        assert(existsSync(publicPath), `book slide ${index + 1} media file does not exist: ${src}`);
+      }
+
+      const projectSrc = new URLSearchParams(slide.media.src.split('?')[1]).get('project');
+      assert(projectSrc?.startsWith('/'), `book slide ${index + 1} needs a local project URL`);
+      const projectPath = join(process.cwd(), 'public', projectSrc.slice(1));
+      assert(existsSync(projectPath), `book slide ${index + 1} project does not exist: ${projectSrc}`);
+      const project = JSON.parse(readFileSync(projectPath, 'utf8'));
+      assert(project.title === slide.title, `book slide ${index + 1} project title does not match`);
+      assert(project.author === slide.author, `book slide ${index + 1} project author does not match`);
+      assert(project.isbn === slide.isbn, `book slide ${index + 1} project ISBN does not match`);
+      assert(existsSync(join(dirname(projectPath), project.cover_path)), `book slide ${index + 1} project cover does not exist`);
+    }
 
     if (slide.media.kind === 'collection') {
       assert(Array.isArray(slide.media.items) && slide.media.items.length >= 3, `collection slide ${index + 1} needs at least three books`);
@@ -51,7 +69,7 @@ slides.forEach((slide, index) => {
       });
     }
 
-    if (slide.media.src?.startsWith('/')) {
+    if (slide.media.kind !== 'book' && slide.media.src?.startsWith('/')) {
       const publicPath = join(process.cwd(), 'public', slide.media.src.slice(1));
       assert(existsSync(publicPath), `slide ${index + 1} media file does not exist: ${slide.media.src}`);
     }

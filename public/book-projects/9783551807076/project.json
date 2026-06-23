@@ -1,0 +1,16 @@
+{
+  "title": "Blue Box 18",
+  "author": "Kouji Miura",
+  "isbn": "9783551807076",
+  "label": "BUCHEMPFEHLUNG",
+  "hook": "NEU FÜR DEINE LESELISTE",
+  "feature": "JETZT ENTDECKEN",
+  "cta_prefix": "JETZT BEI",
+  "cta": "SCHNELSENER BÜCHERECK",
+  "pages": 192,
+  "cover_ratio": 0.61538,
+  "depth_ratio": 0.075,
+  "duration_seconds": 15,
+  "cover_path": "cover.jpg",
+  "cover_url": "/book-projects/9783551807076/cover.jpg"
+}

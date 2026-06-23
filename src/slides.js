@@ -38,8 +38,9 @@ function bookSlide({
     isbn,
     durationMs,
     media: {
-      kind: 'image',
-      src: `/media/covers/${isbn}.${coverExt}`,
+      kind: 'book',
+      src: `/book-template/generic-video.html?project=/book-projects/${isbn}/project.json`,
+      coverSrc: `/media/covers/${isbn}.${coverExt}`,
       alt: `Cover von ${title}`
     }
   };
@@ -79,7 +80,7 @@ function collectionSlide({ eyebrow, title, author, focus, note, palette, symbol,
         title: book.title,
         author: book.author,
         label: book.eyebrow.split('·').slice(1).join('·').trim(),
-        src: book.media.src,
+        src: book.media.coverSrc,
         alt: book.media.alt
       }))
     }
