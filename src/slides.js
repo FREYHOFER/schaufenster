@@ -1,6 +1,8 @@
 // Aktualisiert am 22.06.2026: Freigestellte PNG-Cover ohne weiße Ecken ergänzt.
 export const slideDurationMs = 42000;
 
+const BASE = (import.meta.env && import.meta.env.BASE_URL) || '/';
+
 const instagramVideos = [
   ['DXKQgubDRUv', ['#405de6', '#fdc468']],
   ['DXpCJ0dDOGM', ['#f77737', '#c13584']],
@@ -39,8 +41,8 @@ function bookSlide({
     durationMs,
     media: {
       kind: 'book',
-      src: `/book-template/generic-video.html?project=/book-projects/${isbn}/project.json`,
-      coverSrc: `/media/covers/${isbn}.${coverExt}`,
+      src: `${BASE}book-template/generic-video.html?project=${BASE}book-projects/${isbn}/project.json`,
+      coverSrc: `${BASE}media/covers/${isbn}.${coverExt}`,
       alt: `Cover von ${title}`
     }
   };
@@ -102,7 +104,7 @@ function instagramMoment([shortcode, palette], index) {
     durationMs: 22000,
     media: {
       kind: 'video',
-      src: `/media/instagram/${shortcode}.mp4`,
+      src: `${BASE}media/instagram/${shortcode}.mp4`,
       alt: `Instagram-Video ${index + 1} vom Schnelsener Büchereck`,
       sourceUrl: `https://www.instagram.com/p/${shortcode}/`,
       loop: true
@@ -300,7 +302,7 @@ const groupsSlide = {
   durationMs: 34000,
   media: {
     kind: 'image',
-    src: '/media/community/groups-reference.png',
+    src: `${BASE}media/community/groups-reference.png`,
     alt: 'Eine musizierende Gruppe im Keller des Schnelsener Bücherecks'
   }
 };
