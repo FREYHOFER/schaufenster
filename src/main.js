@@ -19,10 +19,11 @@ const params = new URLSearchParams(window.location.search);
 
 let currentIndex = getInitialIndex();
 let advanceTimeoutId;
-let particleAnimationTimerId;
-let preloadTimerId;
-let rendererMessageHandler;
-const imagePreloads = new Map();
+let animationFrameId;
+let bookRenderer = null;
+let bookAnimStart = 0;
+let renderToken = 0;
+const bookConfigCache = new Map();
 
 function normalizeIndex(index) {
   return ((index % slides.length) + slides.length) % slides.length;
@@ -61,62 +62,43 @@ function isDirectVideo(src = '') {
   return /\.(mp4|webm|ogv|ogg|mov)($|\?)/i.test(src);
 }
 
-function getInstagramEmbedUrl(src = '') {
-  try {
-    const url = new URL(src);
-
-    if (!url.hostname.includes('instagram.com')) {
-      return src;
-    }
-
-    const match = url.pathname.match(/\/(p|reel|tv)\/([^/]+)/i);
-    if (!match) {
-      return src;
-    }
-
-    return `https://www.instagram.com/${match[1].toLowerCase()}/${match[2]}/embed/`;
-  } catch {
-    return src;
-  }
-}
-
 function renderSymbol(slide) {
   refs.visual.dataset.media = 'symbol';
   refs.visual.textContent = slide.symbol;
 }
 
 function preloadImage(src, priority = 'low') {
-  if (!src || imagePreloads.has(src)) {
-    return;
-  }
-
+  if (!src) return;
   const image = new Image();
   image.decoding = 'async';
   image.loading = 'eager';
   image.fetchPriority = priority;
   image.src = src;
-  imagePreloads.set(src, image);
 }
 
-function getSlideImageSources(slide) {
-  if (slide.media?.kind === 'book' && slide.media.coverSrc) {
-    return [slide.media.coverSrc];
+async function fetchProjectConfig(url) {
+  if (bookConfigCache.has(url)) return bookConfigCache.get(url);
+  try {
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) return null;
+    const config = await response.json();
+    bookConfigCache.set(url, config);
+    return config;
+  } catch {
+    return null;
   }
-
-  if (slide.media?.kind === 'image' && slide.media.src) {
-    return [slide.media.src];
-  }
-
-  if (slide.media?.kind === 'collection') {
-    return slide.media.items.map((item) => item.src).filter(Boolean);
-  }
-
-  return [];
 }
 
-function renderBook(slide) {
+async function renderBook(slide, token) {
+  const { BookRenderer } = await import('./book-renderer.js');
+
+  if (token !== renderToken) return;
+
+  refs.visual.dataset.media = 'book';
+  refs.visual.textContent = '';
+
   const shell = document.createElement('div');
-  shell.className = 'book-renderer-shell';
+  shell.className = 'book-renderer-shell is-loading';
 
   const poster = document.createElement('img');
   poster.className = 'book-renderer-poster';
@@ -126,45 +108,68 @@ function renderBook(slide) {
   poster.loading = 'eager';
   poster.fetchPriority = 'high';
 
-  const frame = document.createElement('iframe');
-  frame.className = 'book-renderer';
-  frame.src = slide.media.src;
-  frame.title = `3D-Animation für ${slide.title}`;
-  frame.loading = 'eager';
-  frame.setAttribute('aria-label', slide.media.alt || `3D-Buch von ${slide.title}`);
+  const canvas = document.createElement('canvas');
+  canvas.className = 'book-3d-canvas';
+  canvas.width = 720;
+  canvas.height = 1280;
 
-  rendererMessageHandler = (event) => {
-    if (event.source !== frame.contentWindow || event.origin !== window.location.origin) return;
-    if (event.data?.type === 'book-renderer-ready') frame.classList.add('is-ready');
-    if (event.data?.type === 'book-renderer-error') console.error('Book renderer failed:', event.data.message);
-  };
-  window.addEventListener('message', rendererMessageHandler);
-
-  shell.append(poster, frame);
+  shell.append(poster, canvas);
   refs.visual.append(shell);
+  requestAnimationFrame(() => shell.classList.add('is-entered'));
+
+  if (bookRenderer) {
+    bookRenderer.dispose();
+    bookRenderer = null;
+  }
+
+  bookRenderer = new BookRenderer(canvas);
+  bookAnimStart = performance.now() / 1000;
+
+  const config = await fetchProjectConfig(slide.media.projectUrl);
+  if (!config || token !== renderToken || bookRenderer.disposed) return;
+
+  try {
+    await bookRenderer.loadCover(slide.media.coverUrl);
+    if (token !== renderToken || bookRenderer.disposed) return;
+    bookRenderer.setConfig(config);
+    bookRenderer.resize(shell.clientWidth, shell.clientHeight);
+    shell.classList.remove('is-loading');
+    poster.classList.add('is-loaded');
+    startBookAnimation();
+  } catch (err) {
+    console.error('Book renderer failed:', err);
+  }
 }
 
-function scheduleUpcomingImagePreloads(index) {
-  window.clearTimeout(preloadTimerId);
-  preloadTimerId = window.setTimeout(() => {
-    let queued = 0;
+function startBookAnimation() {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
 
-    for (let offset = 1; offset < slides.length && queued < 6; offset += 1) {
-      const candidate = slides[normalizeIndex(index + offset)];
+  function loop() {
+    if (!bookRenderer || bookRenderer.disposed) return;
+    const elapsed = performance.now() / 1000 - bookAnimStart;
+    bookRenderer.renderIdle(elapsed);
+    animationFrameId = requestAnimationFrame(loop);
+  }
 
-      for (const src of getSlideImageSources(candidate)) {
-        if (queued >= 6) break;
-        preloadImage(src);
-        queued += 1;
-      }
-    }
-  }, 180);
+  animationFrameId = requestAnimationFrame(loop);
+}
+
+function stopBookAnimation() {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
 }
 
 function renderImage(slide) {
+  refs.visual.dataset.media = 'image';
+  preloadImage(slide.media.src, 'high');
+
   const shell = document.createElement('div');
   shell.className = 'cover-shell';
-  preloadImage(slide.media.src, 'high');
 
   const image = document.createElement('img');
   image.className = 'cover-image';
@@ -180,6 +185,7 @@ function renderImage(slide) {
 }
 
 function renderCollection(slide) {
+  refs.visual.dataset.media = 'collection';
   const grid = document.createElement('section');
   grid.className = 'collection-grid';
   grid.setAttribute('aria-label', `${slide.title}: ${slide.media.items.length} Buchtipps`);
@@ -227,6 +233,7 @@ function renderCollection(slide) {
 }
 
 function renderVideo(slide) {
+  refs.visual.dataset.media = 'video';
   const video = document.createElement('video');
   video.className = 'visual-video';
   video.autoplay = true;
@@ -260,86 +267,42 @@ function renderVideo(slide) {
   return video;
 }
 
-function renderInstagramEmbed(slide) {
-  const shell = document.createElement('div');
-  shell.className = 'instagram-embed';
-
-  const frame = document.createElement('iframe');
-  frame.title = slide.media.alt || slide.title;
-  frame.src = getInstagramEmbedUrl(slide.media.src);
-  frame.loading = 'eager';
-  frame.allow = 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share';
-  frame.referrerPolicy = 'strict-origin-when-cross-origin';
-
-  shell.append(frame);
-  refs.visual.append(shell);
-}
-
-function renderInstagramPoster(slide) {
-  const phone = document.createElement('div');
-  phone.className = `social-phone ${slide.media?.accent || ''}`.trim();
-
-  const chrome = document.createElement('div');
-  chrome.className = 'social-chrome';
-  chrome.innerHTML = '<span></span><span></span><span></span>';
-
-  const reel = document.createElement('div');
-  reel.className = 'social-reel';
-  reel.innerHTML = '<span></span><span></span><span></span>';
-
-  const play = document.createElement('div');
-  play.className = 'play-mark';
-  play.setAttribute('aria-hidden', 'true');
-
-  const label = document.createElement('p');
-  label.className = 'social-label';
-  label.textContent = slide.media?.title || slide.title;
-
-  phone.append(chrome, reel, play, label);
-  refs.visual.append(phone);
-}
-
 function renderVisual(slide) {
-  const media = slide.media;
-  if (rendererMessageHandler) {
-    window.removeEventListener('message', rendererMessageHandler);
-    rendererMessageHandler = null;
+  const token = ++renderToken;
+  stopBookAnimation();
+
+  if (bookRenderer && slide.media?.kind !== 'book') {
+    bookRenderer.dispose();
+    bookRenderer = null;
   }
+
   refs.visual.replaceChildren();
   refs.visual.textContent = '';
-  refs.visual.dataset.media = media?.kind || 'symbol';
+  refs.visual.dataset.media = slide.media?.kind || 'symbol';
 
-  if (media?.kind === 'book' && media.src && media.coverSrc) {
-    renderBook(slide);
+  if (slide.media?.kind === 'book' && slide.media.coverSrc) {
+    renderBook(slide, token);
     return null;
   }
 
-  if (media?.kind === 'image' && media.src) {
+  if (slide.media?.kind === 'image' && slide.media.src) {
     renderImage(slide);
     return null;
   }
 
-  if (media?.kind === 'collection' && media.items?.length) {
+  if (slide.media?.kind === 'collection' && slide.media.items?.length) {
     renderCollection(slide);
     return null;
   }
 
-  if (media?.kind === 'video' && media.src) {
+  if (slide.media?.kind === 'video' && slide.media.src) {
     return renderVideo(slide);
   }
 
-  if (media?.kind === 'instagram' && media.src) {
-    if (isDirectVideo(media.src)) {
-      return renderVideo({ ...slide, media: { ...media, kind: 'video' } });
+  if (slide.media?.kind === 'instagram') {
+    if (isDirectVideo(slide.media.src)) {
+      return renderVideo({ ...slide, media: { ...slide.media, kind: 'video' } });
     }
-
-    renderInstagramEmbed(slide);
-    return null;
-  }
-
-  if (media?.kind === 'instagram') {
-    renderInstagramPoster(slide);
-    return null;
   }
 
   renderSymbol(slide);
@@ -420,6 +383,8 @@ function seededValue(seed) {
   const value = Math.sin(seed) * 10000;
   return value - Math.floor(value);
 }
+
+let particleAnimationTimerId;
 
 function stopParticleAnimation() {
   if (particleAnimationTimerId) {
@@ -531,7 +496,6 @@ function renderSlide(index) {
   setOptionalText(refs.note, slide.note);
   renderParticles(slide, index);
   const mediaElement = renderVisual(slide);
-  scheduleUpcomingImagePreloads(index);
 
   scheduleNextSlide(baseDuration);
 

@@ -14,5 +14,8 @@
   "devDependencies": {
     "playwright-core": "^1.53.0",
     "vite": "latest"
+  },
+  "dependencies": {
+    "three": "^0.184.0"
   }
 }

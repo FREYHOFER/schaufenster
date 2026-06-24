@@ -43,6 +43,8 @@ function bookSlide({
       kind: 'book',
       src: `${BASE}book-template/generic-video.html?project=${BASE}book-projects/${isbn}/project.json`,
       coverSrc: `${BASE}media/covers/${isbn}.${coverExt}`,
+      coverUrl: `${BASE}book-projects/${isbn}/cover.jpg`,
+      projectUrl: `${BASE}book-projects/${isbn}/project.json`,
       alt: `Cover von ${title}`
     }
   };

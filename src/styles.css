@@ -582,34 +582,51 @@ h1 {
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 1.15rem;
-  background: #030507;
+  background: #141210;
   box-shadow: 0 1.7rem 4.5rem rgba(0, 0, 0, 0.42);
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 700ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.book-renderer-shell.is-entered {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .book-renderer-poster,
-.book-renderer {
+.book-3d-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  border: 0;
 }
 
 .book-renderer-poster {
   padding: 12%;
   object-fit: contain;
   filter: drop-shadow(0 1.4rem 1.3rem rgba(0, 0, 0, 0.38));
+  transition: opacity 800ms ease, filter 800ms ease;
 }
 
-.book-renderer {
-  background: #030507;
+.book-3d-canvas {
+  display: block;
+  background: #141210;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 280ms ease;
+  transition: opacity 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.book-renderer.is-ready {
+.book-renderer-shell.is-loading .book-3d-canvas {
+  opacity: 0;
+}
+
+.book-renderer-shell:not(.is-loading) .book-3d-canvas {
   opacity: 1;
+}
+
+.book-renderer-shell:not(.is-loading) .book-renderer-poster {
+  opacity: 0;
+  filter: drop-shadow(0 1.4rem 1.3rem rgba(0, 0, 0, 0.38)) blur(4px);
 }
 
 .visual-video,
