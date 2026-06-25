@@ -1,6 +1,6 @@
 import { slides, slideDurationMs } from '../src/slides.js';
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -11,6 +11,8 @@ const assert = (condition, message) => {
 assert(Array.isArray(slides), 'slides must be an array');
 assert(slides.length >= 8, 'slideshow should contain at least 8 slides');
 assert(slideDurationMs >= 20000, 'slides should stay visible long enough for shop-window reading');
+
+const fullBookTitles = new Set(slides.filter((slide) => slide.type === 'book').map((slide) => slide.title));
 
 slides.forEach((slide, index) => {
   for (const field of ['type', 'eyebrow', 'title', 'author', 'symbol']) {
@@ -29,33 +31,30 @@ slides.forEach((slide, index) => {
     assert(typeof slide.kicker === 'string', `book slide ${index + 1} kicker must be a string`);
     assert(slide.focus.trim(), `book slide ${index + 1} is missing focus`);
     assert(slide.note.trim(), `book slide ${index + 1} is missing note`);
-    assert(slide.media?.kind === 'book', `book slide ${index + 1} needs 3D book media`);
+    assert(slide.media?.kind === 'image', `book slide ${index + 1} needs clean cover image media`);
     assert(typeof slide.media.src === 'string' && slide.media.src.trim(), `book slide ${index + 1} is missing media src`);
-    assert(typeof slide.media.coverSrc === 'string' && slide.media.coverSrc.trim(), `book slide ${index + 1} is missing its fallback cover`);
+    assert(typeof slide.media.coverSrc === 'string' && slide.media.coverSrc.trim(), `book slide ${index + 1} is missing its cover source`);
+    assert(slide.media.src === slide.media.coverSrc, `book slide ${index + 1} should render the Libri cover directly`);
+    assert(/\.jpg($|\?)/i.test(slide.media.src), `book slide ${index + 1} should use the rectangular JPG cover`);
   }
 
   if (slide.media) {
-    assert(['book', 'image', 'collection', 'video', 'instagram'].includes(slide.media.kind), `slide ${index + 1} has unsupported media kind`);
-
-    if (slide.media.kind === 'book') {
-      for (const src of [slide.media.src.split('?')[0], slide.media.coverSrc]) {
-        const publicPath = join(process.cwd(), 'public', src.slice(1));
-        assert(existsSync(publicPath), `book slide ${index + 1} media file does not exist: ${src}`);
-      }
-
-      const projectSrc = new URLSearchParams(slide.media.src.split('?')[1]).get('project');
-      assert(projectSrc?.startsWith('/'), `book slide ${index + 1} needs a local project URL`);
-      const projectPath = join(process.cwd(), 'public', projectSrc.slice(1));
-      assert(existsSync(projectPath), `book slide ${index + 1} project does not exist: ${projectSrc}`);
-      const project = JSON.parse(readFileSync(projectPath, 'utf8'));
-      assert(project.title === slide.title, `book slide ${index + 1} project title does not match`);
-      assert(project.author === slide.author, `book slide ${index + 1} project author does not match`);
-      assert(project.isbn === slide.isbn, `book slide ${index + 1} project ISBN does not match`);
-      assert(existsSync(join(dirname(projectPath), project.cover_path)), `book slide ${index + 1} project cover does not exist`);
-    }
+    assert(['image', 'collection', 'video', 'instagram'].includes(slide.media.kind), `slide ${index + 1} has unsupported media kind`);
 
     if (slide.media.kind === 'collection') {
       assert(Array.isArray(slide.media.items) && slide.media.items.length >= 3, `collection slide ${index + 1} needs at least three books`);
+      assert(Array.isArray(slide.media.backgroundItems), `collection slide ${index + 1} needs decorative background titles`);
+      assert(slide.media.backgroundItems.length === 5, `collection slide ${index + 1} needs exactly five decorative background titles`);
+
+      const foregroundTitles = new Set(slide.media.items.map((item) => item.title));
+
+      slide.media.backgroundItems.forEach((item, itemIndex) => {
+        assert(typeof item.label === 'string' && item.label.trim(), `collection slide ${index + 1}, background title ${itemIndex + 1} is missing label`);
+        assert(typeof item.title === 'string' && item.title.trim(), `collection slide ${index + 1}, background title ${itemIndex + 1} is missing title`);
+        assert(typeof item.author === 'string' && item.author.trim(), `collection slide ${index + 1}, background title ${itemIndex + 1} is missing author`);
+        assert(!foregroundTitles.has(item.title), `collection slide ${index + 1}, background title ${itemIndex + 1} duplicates a foreground title`);
+        assert(!fullBookTitles.has(item.title), `collection slide ${index + 1}, background title ${itemIndex + 1} duplicates a full book slide`);
+      });
 
       slide.media.items.forEach((item, itemIndex) => {
         assert(typeof item.title === 'string' && item.title.trim(), `collection slide ${index + 1}, book ${itemIndex + 1} is missing title`);

@@ -19,11 +19,6 @@ const params = new URLSearchParams(window.location.search);
 
 let currentIndex = getInitialIndex();
 let advanceTimeoutId;
-let animationFrameId;
-let bookRenderer = null;
-let bookAnimStart = 0;
-let renderToken = 0;
-const bookConfigCache = new Map();
 
 function normalizeIndex(index) {
   return ((index % slides.length) + slides.length) % slides.length;
@@ -76,94 +71,6 @@ function preloadImage(src, priority = 'low') {
   image.src = src;
 }
 
-async function fetchProjectConfig(url) {
-  if (bookConfigCache.has(url)) return bookConfigCache.get(url);
-  try {
-    const response = await fetch(url, { cache: 'no-store' });
-    if (!response.ok) return null;
-    const config = await response.json();
-    bookConfigCache.set(url, config);
-    return config;
-  } catch {
-    return null;
-  }
-}
-
-async function renderBook(slide, token) {
-  const { BookRenderer } = await import('./book-renderer.js');
-
-  if (token !== renderToken) return;
-
-  refs.visual.dataset.media = 'book';
-  refs.visual.textContent = '';
-
-  const shell = document.createElement('div');
-  shell.className = 'book-renderer-shell is-loading';
-
-  const poster = document.createElement('img');
-  poster.className = 'book-renderer-poster';
-  poster.src = slide.media.coverSrc;
-  poster.alt = '';
-  poster.decoding = 'async';
-  poster.loading = 'eager';
-  poster.fetchPriority = 'high';
-
-  const canvas = document.createElement('canvas');
-  canvas.className = 'book-3d-canvas';
-  canvas.width = 720;
-  canvas.height = 1280;
-
-  shell.append(poster, canvas);
-  refs.visual.append(shell);
-  requestAnimationFrame(() => shell.classList.add('is-entered'));
-
-  if (bookRenderer) {
-    bookRenderer.dispose();
-    bookRenderer = null;
-  }
-
-  bookRenderer = new BookRenderer(canvas);
-  bookAnimStart = performance.now() / 1000;
-
-  const config = await fetchProjectConfig(slide.media.projectUrl);
-  if (!config || token !== renderToken || bookRenderer.disposed) return;
-
-  try {
-    await bookRenderer.loadCover(slide.media.coverUrl);
-    if (token !== renderToken || bookRenderer.disposed) return;
-    bookRenderer.setConfig(config);
-    bookRenderer.resize(shell.clientWidth, shell.clientHeight);
-    shell.classList.remove('is-loading');
-    poster.classList.add('is-loaded');
-    startBookAnimation();
-  } catch (err) {
-    console.error('Book renderer failed:', err);
-  }
-}
-
-function startBookAnimation() {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
-
-  function loop() {
-    if (!bookRenderer || bookRenderer.disposed) return;
-    const elapsed = performance.now() / 1000 - bookAnimStart;
-    bookRenderer.renderIdle(elapsed);
-    animationFrameId = requestAnimationFrame(loop);
-  }
-
-  animationFrameId = requestAnimationFrame(loop);
-}
-
-function stopBookAnimation() {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
-}
-
 function renderImage(slide) {
   refs.visual.dataset.media = 'image';
   preloadImage(slide.media.src, 'high');
@@ -186,6 +93,36 @@ function renderImage(slide) {
 
 function renderCollection(slide) {
   refs.visual.dataset.media = 'collection';
+  const scene = document.createElement('div');
+  scene.className = 'collection-scene';
+
+  if (slide.media.backgroundItems?.length) {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'collection-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+
+    slide.media.backgroundItems.forEach((item) => {
+      const card = document.createElement('article');
+      card.className = 'collection-backdrop-card';
+
+      const label = document.createElement('span');
+      label.className = 'collection-backdrop-label';
+      label.textContent = item.label || 'Titel';
+
+      const title = document.createElement('strong');
+      title.textContent = item.title;
+
+      const author = document.createElement('span');
+      author.className = 'collection-backdrop-author';
+      author.textContent = item.author || '';
+
+      card.append(label, title, author);
+      backdrop.append(card);
+    });
+
+    scene.append(backdrop);
+  }
+
   const grid = document.createElement('section');
   grid.className = 'collection-grid';
   grid.setAttribute('aria-label', `${slide.title}: ${slide.media.items.length} Buchtipps`);
@@ -229,7 +166,8 @@ function renderCollection(slide) {
     grid.append(card);
   });
 
-  refs.visual.append(grid);
+  scene.append(grid);
+  refs.visual.append(scene);
 }
 
 function renderVideo(slide) {
@@ -268,22 +206,9 @@ function renderVideo(slide) {
 }
 
 function renderVisual(slide) {
-  const token = ++renderToken;
-  stopBookAnimation();
-
-  if (bookRenderer && slide.media?.kind !== 'book') {
-    bookRenderer.dispose();
-    bookRenderer = null;
-  }
-
   refs.visual.replaceChildren();
   refs.visual.textContent = '';
   refs.visual.dataset.media = slide.media?.kind || 'symbol';
-
-  if (slide.media?.kind === 'book' && slide.media.coverSrc) {
-    renderBook(slide, token);
-    return null;
-  }
 
   if (slide.media?.kind === 'image' && slide.media.src) {
     renderImage(slide);
@@ -477,7 +402,7 @@ function renderSlide(index) {
   const slide = slides[index];
   const [from, to] = slide.palette;
   const baseDuration = getSlideDuration(slide);
-  const isLight = slide.theme === 'light' || slide.theme === 'poster';
+  const isLight = slide.type === 'book' || slide.theme === 'light' || slide.theme === 'poster';
 
   refs.root.style.setProperty('--accent-from', from);
   refs.root.style.setProperty('--accent-to', to);
@@ -486,7 +411,7 @@ function renderSlide(index) {
   syncUrlToSlide(index);
 
   refs.slide.dataset.type = slide.type;
-  refs.slide.dataset.theme = slide.theme || 'dark';
+  refs.slide.dataset.theme = slide.type === 'book' ? 'book-white' : slide.theme || 'dark';
   refs.slide.dataset.media = slide.media?.kind || 'symbol';
   refs.eyebrow.textContent = slide.eyebrow;
   setOptionalText(refs.kicker, slide.kicker);

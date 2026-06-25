@@ -1,4 +1,4 @@
-// Aktualisiert am 22.06.2026: Freigestellte PNG-Cover ohne weiße Ecken ergänzt.
+// Aktualisiert am 25.06.2026: Buchfolien nutzen klare JPG-Cover mit dekorativer Hintergrundbewegung.
 export const slideDurationMs = 42000;
 
 const BASE = (import.meta.env && import.meta.env.BASE_URL) || '/';
@@ -24,9 +24,10 @@ function bookSlide({
   palette,
   symbol,
   isbn,
-  coverExt = 'jpg',
   durationMs = 40000
 }) {
+  const coverSrc = `${BASE}media/covers/${isbn}.jpg`;
+
   return {
     type: 'book',
     eyebrow: month,
@@ -40,11 +41,9 @@ function bookSlide({
     isbn,
     durationMs,
     media: {
-      kind: 'book',
-      src: `${BASE}book-template/generic-video.html?project=${BASE}book-projects/${isbn}/project.json`,
-      coverSrc: `${BASE}media/covers/${isbn}.${coverExt}`,
-      coverUrl: `${BASE}book-projects/${isbn}/cover.jpg`,
-      projectUrl: `${BASE}book-projects/${isbn}/project.json`,
+      kind: 'image',
+      src: coverSrc,
+      coverSrc,
       alt: `Cover von ${title}`
     }
   };
@@ -66,7 +65,18 @@ function posterSlide({ title, author = 'Diogenes Verlag', durationMs = 26000 }) 
   };
 }
 
-function collectionSlide({ eyebrow, title, author, focus, note, palette, symbol, books, durationMs = 40000 }) {
+function collectionSlide({
+  eyebrow,
+  title,
+  author,
+  focus,
+  note,
+  palette,
+  symbol,
+  books,
+  backgroundTitles = [],
+  durationMs = 40000
+}) {
   return {
     type: 'collection',
     eyebrow,
@@ -80,6 +90,11 @@ function collectionSlide({ eyebrow, title, author, focus, note, palette, symbol,
     durationMs,
     media: {
       kind: 'collection',
+      backgroundItems: backgroundTitles.map((item) => ({
+        label: item.label,
+        title: item.title,
+        author: item.author
+      })),
       items: books.map((book) => ({
         title: book.title,
         author: book.author,
@@ -139,7 +154,6 @@ const bookSlides = [
     palette: ['#f4c94c', '#333948'],
     symbol: '⚡',
     isbn: '9783551808165',
-    coverExt: 'png',
     durationMs: 41000
   }),
   bookSlide({
@@ -153,7 +167,6 @@ const bookSlides = [
     palette: ['#d7edf4', '#4e7fac'],
     symbol: '♡',
     isbn: '9783551807076',
-    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -167,7 +180,6 @@ const bookSlides = [
     palette: ['#f4df68', '#552f5b'],
     symbol: '忍',
     isbn: '9783551808240',
-    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -181,7 +193,6 @@ const bookSlides = [
     palette: ['#23364b', '#d39b67'],
     symbol: '🐺',
     isbn: '9783551586759',
-    coverExt: 'png',
     durationMs: 42000
   }),
   bookSlide({
@@ -208,7 +219,6 @@ const bookSlides = [
     palette: ['#1d4b46', '#d9aa6a'],
     symbol: '🐍',
     isbn: '9783551587251',
-    coverExt: 'png',
     durationMs: 42000
   }),
   bookSlide({
@@ -222,7 +232,6 @@ const bookSlides = [
     palette: ['#123d49', '#d7b85f'],
     symbol: '☼',
     isbn: '9783551559609',
-    coverExt: 'png',
     durationMs: 41000
   }),
   bookSlide({
@@ -236,7 +245,6 @@ const bookSlides = [
     palette: ['#efe6c8', '#ef6c4d'],
     symbol: '⚙',
     isbn: '9783551522801',
-    coverExt: 'png',
     durationMs: 40000
   }),
   bookSlide({
@@ -250,7 +258,6 @@ const bookSlides = [
     palette: ['#e8f0d3', '#6cae5c'],
     symbol: '♡',
     isbn: '9783551523860',
-    coverExt: 'png',
     durationMs: 39000
   })
 ];
@@ -274,6 +281,13 @@ const mangaCollectionSlide = collectionSlide({
   note: 'Alle vier Titel findet ihr bei uns im Laden.',
   palette: ['#f4c94c', '#4e7fac'],
   symbol: '漫',
+  backgroundTitles: [
+    { label: 'Manga', title: 'Dandadan', author: 'Yukinobu Tatsu' },
+    { label: 'Manga', title: 'Spy x Family', author: 'Tatsuya Endo' },
+    { label: 'Manga', title: 'Kaiju No. 8', author: 'Naoya Matsumoto' },
+    { label: 'Manga', title: 'Jujutsu Kaisen', author: 'Gege Akutami' },
+    { label: 'Manga', title: 'Witch Watch', author: 'Kenta Shinohara' }
+  ],
   books: bookSlides.slice(0, 4),
   durationMs: 43000
 });
@@ -286,6 +300,13 @@ const youngAdultCollectionSlide = collectionSlide({
   note: 'Für Leser*innen ab 14 und 16 Jahren.',
   palette: ['#b88fc6', '#31403c'],
   symbol: 'YA',
+  backgroundTitles: [
+    { label: 'Romantasy', title: 'Lightlark', author: 'Alex Aster' },
+    { label: 'Romantasy', title: 'Divine Rivals', author: 'Rebecca Ross' },
+    { label: 'Fantasy', title: 'A Study in Drowning', author: 'Ava Reid' },
+    { label: 'Young Adult', title: 'Shatter Me', author: 'Tahereh Mafi' },
+    { label: 'Fantasy', title: 'Once Upon a Broken Heart', author: 'Stephanie Garber' }
+  ],
   books: bookSlides.slice(4, 7),
   durationMs: 41000
 });
