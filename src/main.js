@@ -9,16 +9,25 @@ const refs = {
   kicker: document.querySelector('#kicker'),
   title: document.querySelector('#title'),
   author: document.querySelector('#author'),
+  audience: document.querySelector('#audience'),
   focus: document.querySelector('#focus'),
   note: document.querySelector('#note'),
+  slideProgress: document.querySelector('#slideProgress'),
+  progressFill: document.querySelector('#progressFill'),
+  pauseToggle: document.querySelector('#pauseToggle'),
   previousSlide: document.querySelector('#previousSlide'),
   nextSlide: document.querySelector('#nextSlide')
 };
 
 const params = new URLSearchParams(window.location.search);
+const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 let currentIndex = getInitialIndex();
 let advanceTimeoutId;
+let manualPaused = params.get('pause') === '1' || params.get('pause') === 'true';
+let resizeTimeoutId;
+let touchStartX;
+let touchStartY;
 
 function normalizeIndex(index) {
   return ((index % slides.length) + slides.length) % slides.length;
@@ -44,7 +53,7 @@ function getInitialIndex() {
 }
 
 function isPaused() {
-  return params.get('pause') === '1' || params.get('pause') === 'true';
+  return manualPaused;
 }
 
 function getVideoType(src) {
@@ -295,6 +304,45 @@ function scheduleNextSlide(durationMs) {
   }
 }
 
+function updateProgress(index) {
+  if (refs.slideProgress) {
+    refs.slideProgress.textContent = `${index + 1}/${slides.length}`;
+  }
+
+  if (refs.progressFill) {
+    refs.progressFill.style.setProperty('--progress', `${((index + 1) / slides.length) * 100}%`);
+  }
+}
+
+function updatePauseButton() {
+  if (!refs.pauseToggle) {
+    return;
+  }
+
+  const label = manualPaused ? 'Diashow fortsetzen' : 'Diashow pausieren';
+  refs.pauseToggle.setAttribute('aria-label', label);
+  refs.pauseToggle.title = label;
+  refs.pauseToggle.textContent = manualPaused ? '▶' : 'Ⅱ';
+}
+
+function getProgressColor(palette, isLight) {
+  const channels = palette.map((color) => {
+    const normalized = color.replace('#', '');
+    return [
+      Number.parseInt(normalized.slice(0, 2), 16),
+      Number.parseInt(normalized.slice(2, 4), 16),
+      Number.parseInt(normalized.slice(4, 6), 16)
+    ];
+  });
+  const average = channels[0].map((value, index) => Math.round((value + channels[1][index]) / 2));
+  const complement = average.map((value) => 255 - value);
+  const mixTarget = isLight ? 24 : 245;
+  const mixAmount = isLight ? 0.34 : 0.22;
+  const contrasted = complement.map((value) => Math.round(value * (1 - mixAmount) + mixTarget * mixAmount));
+
+  return `rgb(${contrasted.join(' ')})`;
+}
+
 function syncUrlToSlide(index) {
   params.set('slide', String(index + 1));
   params.delete('index');
@@ -395,7 +443,9 @@ function renderParticles(slide, index) {
   }
 
   refs.slide.prepend(field);
-  animateHeatParticles(specs);
+  if (!reducedMotionQuery.matches) {
+    animateHeatParticles(specs);
+  }
 }
 
 function renderSlide(index) {
@@ -406,6 +456,7 @@ function renderSlide(index) {
 
   refs.root.style.setProperty('--accent-from', from);
   refs.root.style.setProperty('--accent-to', to);
+  refs.root.style.setProperty('--progress-color', getProgressColor(slide.palette, isLight));
   refs.root.style.setProperty('--text', isLight ? '#20231f' : '#fffaf2');
   refs.root.style.setProperty('--muted', isLight ? 'rgba(32, 35, 31, 0.68)' : 'rgba(255, 250, 242, 0.7)');
   syncUrlToSlide(index);
@@ -417,8 +468,11 @@ function renderSlide(index) {
   setOptionalText(refs.kicker, slide.kicker);
   refs.title.textContent = slide.title;
   refs.author.textContent = slide.author;
+  setOptionalText(refs.audience, slide.audience);
   setClampedText(refs.focus, slide.focus);
   setOptionalText(refs.note, slide.note);
+  updateProgress(index);
+  updatePauseButton();
   renderParticles(slide, index);
   const mediaElement = renderVisual(slide);
 
@@ -452,8 +506,36 @@ function previousSlide() {
   renderSlide(currentIndex);
 }
 
+function setPaused(nextPaused) {
+  manualPaused = nextPaused;
+
+  if (manualPaused) {
+    params.set('pause', '1');
+    window.clearTimeout(advanceTimeoutId);
+  } else {
+    params.delete('pause');
+  }
+
+  updatePauseButton();
+  syncUrlToSlide(currentIndex);
+
+  if (!manualPaused) {
+    renderCurrentSlide();
+  }
+}
+
+function togglePaused() {
+  setPaused(!manualPaused);
+}
+
 function handleKeyboardNavigation(event) {
   if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+    return;
+  }
+
+  if (event.key === ' ') {
+    event.preventDefault();
+    togglePaused();
     return;
   }
 
@@ -494,12 +576,51 @@ function clearPointerNavigation() {
   delete refs.slide.dataset.navHover;
 }
 
+function handleTouchStart(event) {
+  if (event.pointerType !== 'touch') {
+    return;
+  }
+
+  touchStartX = event.clientX;
+  touchStartY = event.clientY;
+}
+
+function handleTouchEnd(event) {
+  if (event.pointerType !== 'touch' || touchStartX === undefined || touchStartY === undefined) {
+    return;
+  }
+
+  const deltaX = event.clientX - touchStartX;
+  const deltaY = event.clientY - touchStartY;
+  touchStartX = undefined;
+  touchStartY = undefined;
+
+  if (Math.abs(deltaX) < 52 || Math.abs(deltaX) < Math.abs(deltaY) * 1.35) {
+    return;
+  }
+
+  if (deltaX < 0) {
+    nextSlide();
+  } else {
+    previousSlide();
+  }
+}
+
+function handleResize() {
+  window.clearTimeout(resizeTimeoutId);
+  resizeTimeoutId = window.setTimeout(renderCurrentSlide, 140);
+}
+
 function bindNavigation() {
+  refs.pauseToggle?.addEventListener('click', togglePaused);
   refs.nextSlide?.addEventListener('click', nextSlide);
   refs.previousSlide?.addEventListener('click', previousSlide);
   refs.slide.addEventListener('pointermove', handlePointerNavigation);
+  refs.slide.addEventListener('pointerdown', handleTouchStart);
+  refs.slide.addEventListener('pointerup', handleTouchEnd);
   refs.slide.addEventListener('pointerleave', clearPointerNavigation);
   window.addEventListener('keydown', handleKeyboardNavigation);
+  window.addEventListener('resize', handleResize);
 }
 
 function renderCurrentSlide() {
@@ -514,5 +635,9 @@ document.addEventListener('visibilitychange', () => {
 
   if (document.visibilityState === 'visible') {
     renderCurrentSlide();
+  } else {
+    stopParticleAnimation();
   }
 });
+
+reducedMotionQuery.addEventListener('change', renderCurrentSlide);

@@ -4,8 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
-    <meta name="description" content="Automatische Buchhandlungs-Diashow mit aktuellen Neuerscheinungen." />
-    <title>Schaufenster Diashow</title>
+    <meta
+      name="description"
+      content="Aktuelle Manga-, Young-Adult- und Kinderbuch-Tipps vom Schnelsener Büchereck für junge Leser*innen, Familien und Eltern."
+    />
+    <title>Schnelsener Büchereck · Manga, YA & Kinderbücher</title>
   </head>
   <body>
     <main class="stage" aria-live="polite">
@@ -16,8 +19,18 @@
           <p class="kicker" id="kicker"></p>
           <h1 id="title"></h1>
           <p class="author" id="author"></p>
+          <p class="audience" id="audience"></p>
           <p class="focus" id="focus"></p>
           <p class="note" id="note"></p>
+        </div>
+        <div class="slide-controls" aria-label="Diashow-Steuerung">
+          <span class="slide-progress" id="slideProgress"></span>
+          <button class="pause-button" id="pauseToggle" type="button" aria-label="Diashow pausieren" title="Diashow pausieren">
+            <span aria-hidden="true">Ⅱ</span>
+          </button>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
         </div>
         <div class="nav-zone nav-zone--previous">
           <button class="nav-button" id="previousSlide" type="button" aria-label="Vorherige Folie">

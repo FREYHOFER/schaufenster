@@ -30,7 +30,9 @@ slides.forEach((slide, index) => {
   if (slide.type === 'book') {
     assert(typeof slide.kicker === 'string', `book slide ${index + 1} kicker must be a string`);
     assert(slide.focus.trim(), `book slide ${index + 1} is missing focus`);
-    assert(slide.note.trim(), `book slide ${index + 1} is missing note`);
+    assert(slide.focus.endsWith(' …'), `book slide ${index + 1} should end its excerpt with an ellipsis`);
+    assert(!slide.note.trim(), `book slide ${index + 1} should not add promotional copy below the excerpt`);
+    assert(!slide.audience.trim(), `book slide ${index + 1} should keep age information in the eyebrow`);
     assert(slide.media?.kind === 'image', `book slide ${index + 1} needs clean cover image media`);
     assert(typeof slide.media.src === 'string' && slide.media.src.trim(), `book slide ${index + 1} is missing media src`);
     assert(typeof slide.media.coverSrc === 'string' && slide.media.coverSrc.trim(), `book slide ${index + 1} is missing its cover source`);
@@ -42,9 +44,9 @@ slides.forEach((slide, index) => {
     assert(['image', 'collection', 'video', 'instagram'].includes(slide.media.kind), `slide ${index + 1} has unsupported media kind`);
 
     if (slide.media.kind === 'collection') {
-      assert(Array.isArray(slide.media.items) && slide.media.items.length >= 3, `collection slide ${index + 1} needs at least three books`);
+      assert(Array.isArray(slide.media.items) && slide.media.items.length >= 1, `collection slide ${index + 1} needs at least one book`);
       assert(Array.isArray(slide.media.backgroundItems), `collection slide ${index + 1} needs decorative background titles`);
-      assert(slide.media.backgroundItems.length === 5, `collection slide ${index + 1} needs exactly five decorative background titles`);
+      assert(slide.media.backgroundItems.length >= 3, `collection slide ${index + 1} needs at least three decorative background titles`);
 
       const foregroundTitles = new Set(slide.media.items.map((item) => item.title));
 
@@ -83,9 +85,9 @@ const infoCount = slides.filter((slide) => slide.type === 'info').length;
 const posterCount = slides.filter((slide) => slide.type === 'poster').length;
 const communityCount = slides.filter((slide) => slide.type === 'community').length;
 const videoCount = slides.filter((slide) => slide.media?.kind === 'video').length;
-assert(bookCount >= 10, 'show at least 10 book slides');
-assert(collectionCount === 2, 'show the Manga and Young Adult collection slides');
-assert(posterCount === 4, 'show the four restored poster slides');
+assert(bookCount === 0, 'keep individual book slides out of the condensed shop-window rotation');
+assert(collectionCount === 8, 'show eight substantial editorial overview slides');
+assert(posterCount === 3, 'show three deliberate shop-window slogans');
 assert(communityCount === 1, 'show the restored community slide');
 assert(instagramCount === 0, 'keep Instagram slides disabled for the live version');
 assert(videoCount === 0, 'keep video slides disabled for the live version');

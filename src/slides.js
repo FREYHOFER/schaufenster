@@ -1,4 +1,4 @@
-// Aktualisiert am 25.06.2026: Buchfolien nutzen klare JPG-Cover mit dekorativer Hintergrundbewegung.
+// Aktualisiert am 06.08.2026: Heartstopper 6 nach aktuellem Jugendbuch-Bestsellerrang hervorgehoben.
 export const slideDurationMs = 42000;
 
 const BASE = (import.meta.env && import.meta.env.BASE_URL) || '/';
@@ -20,7 +20,6 @@ function bookSlide({
   title,
   author,
   focus,
-  note,
   palette,
   symbol,
   isbn,
@@ -34,8 +33,9 @@ function bookSlide({
     kicker: '',
     title,
     author,
-    focus,
-    note,
+    audience: '',
+    focus: `${focus.trim().replace(/[.!?…]+$/, '')} …`,
+    note: '',
     palette,
     symbol,
     isbn,
@@ -49,7 +49,14 @@ function bookSlide({
   };
 }
 
-function posterSlide({ title, author = 'Diogenes Verlag', durationMs = 26000 }) {
+function posterSlide({
+  title,
+  author = 'Schnelsener Büchereck',
+  audience = '',
+  note = 'Schnelsener Büchereck, die Eckbuchhandlung um die Ecke.',
+  palette = ['#7cc7c2', '#ef9f8f'],
+  durationMs = 26000
+}) {
   return {
     type: 'poster',
     theme: 'poster',
@@ -57,9 +64,10 @@ function posterSlide({ title, author = 'Diogenes Verlag', durationMs = 26000 }) 
     kicker: '',
     title,
     author,
+    audience,
     focus: '',
-    note: 'Schnelsener Büchereck, die Eckbuchhandlung um die Ecke.',
-    palette: ['#fbf9f4', '#111111'],
+    note,
+    palette,
     symbol: 'D',
     durationMs
   };
@@ -69,8 +77,6 @@ function collectionSlide({
   eyebrow,
   title,
   author,
-  focus,
-  note,
   palette,
   symbol,
   books,
@@ -83,8 +89,9 @@ function collectionSlide({
     kicker: '',
     title,
     author,
-    focus,
-    note,
+    audience: '',
+    focus: '',
+    note: '',
     palette,
     symbol,
     durationMs,
@@ -102,6 +109,22 @@ function collectionSlide({
         src: book.media.coverSrc,
         alt: book.media.alt
       }))
+    }
+  };
+}
+
+function topicBook({ eyebrow, title, author, isbn }) {
+  const coverSrc = `${BASE}media/covers/${isbn}.jpg`;
+
+  return {
+    eyebrow,
+    title,
+    author,
+    media: {
+      kind: 'image',
+      src: coverSrc,
+      coverSrc,
+      alt: `Buchcover von ${title}`
     }
   };
 }
@@ -131,9 +154,10 @@ function instagramMoment([shortcode, palette], index) {
 
 const bookSlides = [
   bookSlide({
-    month: 'Manga · Neu seit 26. Mai 2026',
+    month: 'Manga · ab 10 · Neu seit 26. Mai 2026',
     title: 'One Piece 112',
     author: 'Eiichiro Oda',
+    audience: 'Für Manga-Fans ab 10',
     focus:
       'Die Strohhutbande erreicht endlich Elban, die sagenumwobene Insel der Riesen. Robin erlebt ein lang ersehntes Wiedersehen, während eine mysteriöse Box und Ruffys nächste Herausforderung schon neues Chaos ankündigen.',
     note:
@@ -144,9 +168,10 @@ const bookSlides = [
     durationMs: 42000
   }),
   bookSlide({
-    month: 'Manga · Neu ab 30. Juni 2026',
+    month: 'Manga · ab 14 · Neu seit 30. Juni 2026',
     title: 'Sakamoto Days 22',
     author: 'Yuto Suzuki',
+    audience: 'Für Anime- und Actionfans ab 14',
     focus:
       'Tenkyu hat es auf die Wahrsagerin Atari abgesehen. Als Shin sieht, wie brutal sie verletzt wird, gerät das Familiencredo der Sakamotos ins Wanken: Kann er diejenigen schützen, die ihm wichtig sind, ohne zu töten?',
     note:
@@ -157,22 +182,21 @@ const bookSlides = [
     durationMs: 41000
   }),
   bookSlide({
-    month: 'Manga · Neu seit 26. Mai 2026',
-    title: 'Blue Box 18',
-    author: 'Kouji Miura',
+    month: 'Manga · ab 12 · Neu seit 28. Juli 2026',
+    title: 'PandoraHearts Pearls 6',
+    author: 'Jun Mochizuki',
     focus:
-      'Nach dem Inter High fährt Taikis Badminton-Team ans Meer. Doch Chinatsus Basketballclub trainiert ganz in der Nähe, und aus der erhofften Auszeit wird ein sommerlicher Bewährungstest für Sport und Gefühle.',
-    note:
-      'Warmherzige Mischung aus Romance, Schulalltag, Basketball und Badminton – ab 12 Jahren.',
-    palette: ['#d7edf4', '#4e7fac'],
-    symbol: '♡',
-    isbn: '9783551807076',
+      'Als Spross einer Adelsfamilie verbringt Oz seine Zeit damit, seinem Freund und Diener Gilbert Schwierigkeiten zu machen. Dann wird er von drei schwarzen Gestalten in die Unterwelt namens Abyss gestoßen.',
+    palette: ['#d8c0b6', '#49313d'],
+    symbol: '♜',
+    isbn: '9783551028891',
     durationMs: 40000
   }),
   bookSlide({
-    month: 'Manga · Neustart am 30. Juni 2026',
+    month: 'Manga · ab 12 · Neu seit 30. Juni 2026',
     title: 'Shinobi Undercover 1',
     author: 'Ippon Takegushi & Santa Mitarashi',
+    audience: 'Für Comedy- und Ninja-Fans ab 12',
     focus:
       'Der junge Ninja Yodaka soll die schüchterne Aoi beschützen. Dafür muss er undercover an ihre Highschool – eine Mission, bei der Schulalltag, soziale Ängste und Ninja-Pflichten herrlich kollidieren.',
     note:
@@ -183,9 +207,10 @@ const bookSlides = [
     durationMs: 40000
   }),
   bookSlide({
-    month: 'Young Adult · Neu seit 1. April 2026',
+    month: 'Romantasy · ab 16 · Neu seit 1. April 2026',
     title: 'The Wolf King',
     author: 'Lauren Palphreyman',
+    audience: 'Für Romantasy-Leser*innen ab 16',
     focus:
       'Prinzessin Aurora soll einen grausamen Lord heiraten. Nachdem sie einem jungen Wolf das Leben rettet, entführt Alpha Callum sie in das wilde Land jenseits der Grenze – und mitten in einen Krieg zwischen Menschen und Werwolf-Clans.',
     note:
@@ -196,22 +221,21 @@ const bookSlides = [
     durationMs: 42000
   }),
   bookSlide({
-    month: 'Young Adult · BookTok-Favorit',
-    title: 'Powerless – Das Spiel',
-    author: 'Lauren Roberts',
+    month: 'Graphic Novel · ab 12 · Aktuell Platz 2',
+    title: 'Heartstopper Volume 6',
+    author: 'Alice Oseman',
     focus:
-      'Im Königreich Ilya zählen nur magische Kräfte. Paedyn hat keine – und gibt sich dennoch als Hellseherin aus. Als sie Prinz Kai rettet, landet sie ausgerechnet in den tödlichen Auswahlspielen des Königs.',
-    note:
-      'Enemies-to-Lovers, Wettkampf und Rebellion: der bewährte Einstieg in die Powerless-Trilogie.',
-    palette: ['#ece7df', '#31403c'],
-    symbol: '♛',
-    isbn: '9783764533182',
+      'Jeder in der Schule kennt Nick und Charlie. Aber es ist Nicks letztes Jahr an der Truham Highschool und so langsam gewöhnt er sich an den Gedanken, ab dem Sommer in Leeds zu studieren. Charlie geht derweil ganz in seiner neuen Aufgabe als Schülersprecher auf.',
+    palette: ['#f3d3df', '#d67a93'],
+    symbol: '♡',
+    isbn: '9783732022779',
     durationMs: 41000
   }),
   bookSlide({
-    month: 'Young Adult · Vorschau 31. August 2026',
+    month: 'Romantasy · ab 14 · Erscheint 31. August 2026',
     title: 'Embrace the Serpent',
     author: 'Sunya Mara',
+    audience: 'Für Fantasy-Fans ab 14',
     focus:
       'Saphira kann die Magie aus Edelsteinen wecken und lebt damit im Verborgenen. Als der gefürchtete Schlangenkönig nach ihr suchen lässt, gerät sie zwischen ein gnadenloses Kaiserreich, einen rätselhaften Herrscher und dessen charmanten Jäger.',
     note:
@@ -222,63 +246,87 @@ const bookSlides = [
     durationMs: 42000
   }),
   bookSlide({
-    month: 'Kinderbuch · Abenteuer ab 10',
-    title: 'Die Jagd nach den magischen Münzen',
-    author: 'Jessie Burton',
+    month: 'Kinderbuch · ab 8 · Neu seit 23. Juli 2026',
+    title: 'Sieben Mal Anders (Band 1) – Adele möchte die Welt umarmen',
+    author: 'Sabine Bohlmann',
     focus:
-      'Bo findet im Schlamm der Themse eine schimmernde Münze und hört plötzlich den Fluss sprechen. Gemeinsam mit Billy sucht sie nach einer zweiten Münze – bevor der geheimnisvolle Muncaster sie ihnen wegschnappt.',
-    note:
-      'Poetische Spannung, Londoner Flussmagie und zwei Kinder auf der Suche nach einem unbezahlbaren Schatz.',
-    palette: ['#123d49', '#d7b85f'],
-    symbol: '☼',
-    isbn: '9783551559609',
+      'Adele und ihre fünf Geschwister wohnen in der Hummelgasse. Ihr Alltag ist ein einziges Abenteuer, doch zum ganz großen Glück fehlt Familie Anders noch ein siebtes Kind. Kurzerhand machen sie sich auf die Suche nach einem neuen Geschwisterchen.',
+    palette: ['#e9d8b4', '#d85f72'],
+    symbol: '7',
+    isbn: '9783743219823',
     durationMs: 41000
   }),
   bookSlide({
-    month: 'Kinderbuch · Vorlesen ab 6',
-    title: 'Neon und Bor',
-    author: 'Marc-Uwe Kling & Jan Cronauer',
+    month: 'Kinderbuch · ab 10 · Neu auf Platz 2',
+    title: 'Windwalkers (3). Giftige Gefahr',
+    author: 'Katja Brandis',
     focus:
-      'Neon und ihr hochbegabter Babybruder Bor lösen jedes Problem mit einer Erfindung: Aufräumroboter, Vergrößerungsblasenwerfer oder Zeitschleifenröhre. Dumm nur, dass jede Lösung meist ein noch größeres Problem baut.',
-    note:
-      'Schlaue, wilde Vorlesegeschichten mit MINT-Ideen und dem typischen Kling-Humor.',
-    palette: ['#efe6c8', '#ef6c4d'],
-    symbol: '⚙',
-    isbn: '9783551522801',
+      'Sierra will sich auf die Projektwoche an der Redcliff High konzentrieren. Doch die gefährliche Quallenfrau Thanada ist noch immer auf freiem Fuß, und Unbekannte verbreiten immer bedrohlichere Gerüchte über die Schule.',
+    palette: ['#d8e9ef', '#244d6b'],
+    symbol: '🪶',
+    isbn: '9783401607979',
     durationMs: 40000
   }),
   bookSlide({
-    month: 'Kinderbuch · Vorlesen ab 3',
-    title: 'Das große Buch vom kleinen WIR',
-    author: 'Daniela Kunkel',
+    month: 'Kinderbuch · ab 6 · Erscheint 13. August 2026',
+    title: 'Die Perlschweinchen – Ein glitzerndes Geheimnis',
+    author: 'Kira Gembri',
     focus:
-      'Das kleine WIR entsteht, wenn Menschen zusammenhalten – in Freundschaften, Familien, Kindergarten und Schule. Der Sammelband bringt drei vollständige Bilderbuchgeschichten rund um das grüne Wuscheltier zusammen.',
-    note:
-      'Gefühle und Gemeinschaft werden sichtbar, besprechbar und wunderbar vorlesbar.',
-    palette: ['#e8f0d3', '#6cae5c'],
-    symbol: '♡',
-    isbn: '9783551523860',
+      'Flo sammelt gern besondere Steine, Federn und bunte Knöpfe. Dann kullert ihm ein winziges schimmerndes Wesen mit Rüsselnase vor die Füße: Knurps, ein Perlschweinchen, das am liebsten funkelndes Futter frisst.',
+    palette: ['#f2d7e6', '#b54f8c'],
+    symbol: '✦',
+    isbn: '9783743223417',
     durationMs: 39000
   })
 ];
 
-const everyDaySlide = posterSlide({ title: 'Jeder Tag hat eine Geschichte.' });
+const everyDaySlide = posterSlide({
+  title: 'Jeder Tag hat eine Geschichte.',
+  palette: ['#69b9c5', '#f19b76']
+});
 
-const goodEndingSlide = posterSlide({ title: 'Gut Ding will ein Ende haben.' });
-
-const readAgainSlide = posterSlide({ title: 'Lies mal wieder.' });
+const readAgainSlide = posterSlide({
+  title: 'Lies mal wieder.',
+  palette: ['#e4a85d', '#748ab8']
+});
 
 const canYouReadSlide = posterSlide({
   title: 'Kannst du überhaupt noch lesen?',
-  author: 'Schnelsener Büchereck'
+  author: 'Schnelsener Büchereck',
+  palette: ['#b99bd5', '#e7c95c']
+});
+
+const currentAffairsSlide = collectionSlide({
+  eyebrow: 'Aktuelles',
+  title: 'Aktuelles',
+  author: 'Neu im August · Bestseller · Vorschau',
+  palette: ['#efc654', '#d85f72'],
+  symbol: '!',
+  backgroundTitles: [
+    { label: 'Bestseller', title: 'Die Träume, die wir hatten', author: 'Christiane Hoffmann' },
+    { label: 'Politik', title: 'Der amerikanische Albtraum', author: 'Klaus Brinkbäumer' },
+    { label: 'Vorschau', title: 'Die Perlschweinchen', author: 'Kira Gembri' },
+    { label: 'Manga', title: 'Sakamoto Days 22', author: 'Yuto Suzuki' },
+    { label: 'Vorschau', title: 'Embrace the Serpent', author: 'Sunya Mara' }
+  ],
+  books: [
+    topicBook({
+      eyebrow: 'Neu seit 15. Juli 2026',
+      title: 'Odyssee',
+      author: 'Homer · übersetzt von Roland Hampe',
+      isbn: '9783150208151'
+    }),
+    bookSlides[2],
+    bookSlides[7],
+    bookSlides[8]
+  ],
+  durationMs: 43000
 });
 
 const mangaCollectionSlide = collectionSlide({
   eyebrow: 'Manga',
-  title: 'Manga auf einen Blick',
-  author: 'Vier aktuelle Tipps',
-  focus: 'Action, Romance und ein brandneuer Serienstart – vier Titel zum Entdecken.',
-  note: 'Alle vier Titel findet ihr bei uns im Laden.',
+  title: 'Manga',
+  author: 'Vier neue Bände',
   palette: ['#f4c94c', '#4e7fac'],
   symbol: '漫',
   backgroundTitles: [
@@ -294,21 +342,186 @@ const mangaCollectionSlide = collectionSlide({
 
 const youngAdultCollectionSlide = collectionSlide({
   eyebrow: 'Young Adult',
-  title: 'Young Adult auf einen Blick',
-  author: 'Drei Romantasy-Favoriten',
-  focus: 'Magie, Gefahr und große Gefühle – drei Welten zwischen Rebellion und dunklen Bündnissen.',
-  note: 'Für Leser*innen ab 14 und 16 Jahren.',
+  title: 'Young Adult',
+  author: 'Drei neue Titel',
   palette: ['#b88fc6', '#31403c'],
   symbol: 'YA',
   backgroundTitles: [
     { label: 'Romantasy', title: 'Lightlark', author: 'Alex Aster' },
     { label: 'Romantasy', title: 'Divine Rivals', author: 'Rebecca Ross' },
     { label: 'Fantasy', title: 'A Study in Drowning', author: 'Ava Reid' },
-    { label: 'Young Adult', title: 'Shatter Me', author: 'Tahereh Mafi' },
+    { label: 'Graphic Novel', title: 'Heartstopper', author: 'Alice Oseman' },
     { label: 'Fantasy', title: 'Once Upon a Broken Heart', author: 'Stephanie Garber' }
   ],
   books: bookSlides.slice(4, 7),
   durationMs: 41000
+});
+
+const childrenCollectionSlide = collectionSlide({
+  eyebrow: 'Kinder & Familie',
+  title: 'Kinder & Familie',
+  author: 'Vorlesen · ab 3 · ab 8 · ab 10',
+  palette: ['#82c5b5', '#e58572'],
+  symbol: '♡',
+  backgroundTitles: [
+    { label: 'Bilderbuch', title: 'Der Löwe in dir', author: 'Rachel Bright' },
+    { label: 'Kinderbuch', title: 'Die Schule der magischen Tiere', author: 'Margit Auer' },
+    { label: 'Vorlesen', title: 'Das NEINhorn', author: 'Marc-Uwe Kling' },
+    { label: 'Abenteuer', title: 'Woodwalkers', author: 'Katja Brandis' },
+    { label: 'Familie', title: 'Adele', author: 'Sabine Bohlmann' }
+  ],
+  books: bookSlides.slice(7, 10),
+  durationMs: 41000
+});
+
+const politicsSlide = collectionSlide({
+  eyebrow: 'Politik & Weltordnung',
+  title: 'Politik & Weltordnung',
+  author: 'USA · Deutschland · Ukraine · China',
+  palette: ['#d9bc6f', '#294b5c'],
+  symbol: 'P',
+  backgroundTitles: [
+    { label: 'USA', title: 'Demokratie unter Druck', author: 'Macht und Institutionen' },
+    { label: 'Vorschau', title: 'Zerstörungslust', author: 'Carolin Amlinger & Oliver Nachtwey' },
+    { label: 'Europa', title: 'Wenn Russland gewinnt', author: 'Carlo Masala' },
+    { label: 'China', title: 'China und die Neuordnung der Welt', author: 'Susanne Weigelin-Schwiedrzik' },
+    { label: 'Geopolitik', title: 'Machtverschiebungen', author: 'Westen und neue Weltordnung' }
+  ],
+  books: [
+    topicBook({
+      eyebrow: 'Sachbuch · 2026',
+      title: 'Der amerikanische Albtraum',
+      author: 'Klaus Brinkbäumer',
+      isbn: '9783103977332'
+    }),
+    topicBook({
+      eyebrow: 'Neu seit 13. Januar 2026',
+      title: 'Reichensteuer',
+      author: 'Gabriel Zucman',
+      isbn: '9783518001387'
+    }),
+    topicBook({
+      eyebrow: 'Sachbücher des Monats · Platz 1',
+      title: 'Die Träume, die wir hatten',
+      author: 'Christiane Hoffmann',
+      isbn: '9783406840050'
+    }),
+    topicBook({
+      eyebrow: 'Neu seit 1. April 2026',
+      title: 'Die Welt nach dem Westen',
+      author: 'Daniel Marwecki',
+      isbn: '9783962892395'
+    })
+  ],
+  durationMs: 44000
+});
+
+const citySlide = collectionSlide({
+  eyebrow: 'Stadt & Zusammenleben',
+  title: 'Mobilität & Stadtentwicklung',
+  author: 'Quartiere · Verkehrswende · öffentlicher Raum',
+  palette: ['#64b7aa', '#e69a64'],
+  symbol: '⌂',
+  backgroundTitles: [
+    { label: 'Stadt', title: 'Die Stadt für alle', author: 'Osamu Okamura' },
+    { label: 'Hamburg', title: 'Quartiere im Wandel', author: 'Stadtentwicklung vor Ort' },
+    { label: 'Verkehr', title: 'Straßen neu denken', author: 'öffentlicher Raum' },
+    { label: 'Klima', title: 'Schwammstadt', author: 'Planen mit Wasser und Grün' },
+    { label: 'Nachbarschaft', title: 'Zusammenleben', author: 'Orte für Begegnung' }
+  ],
+  books: [
+    topicBook({
+      eyebrow: 'Neu seit 28. April 2026',
+      title: 'Urban Transformation Playbook',
+      author: 'Urban Lab',
+      isbn: '9783867748841'
+    }),
+    topicBook({
+      eyebrow: 'Bestseller · Taschenbuch 2023',
+      title: 'Autokorrektur',
+      author: 'Katja Diehl',
+      isbn: '9783596709465'
+    }),
+    topicBook({
+      eyebrow: 'Sachbuch · 2024',
+      title: 'Raus aus der AUTOkratie',
+      author: 'Katja Diehl',
+      isbn: '9783103975772'
+    })
+  ],
+  durationMs: 43000
+});
+
+const bakingSlide = collectionSlide({
+  eyebrow: 'Backen',
+  title: 'Backen',
+  author: 'Kuchen, Brot und Familienküche',
+  palette: ['#f1d4b1', '#8a4f45'],
+  symbol: '♨',
+  backgroundTitles: [
+    { label: 'Klassiker', title: 'Backen macht Freude', author: 'Dr. Oetker' },
+    { label: 'Brot', title: 'Brot backen in Perfektion', author: 'Lutz Geißler' },
+    { label: 'Kuchen', title: 'Kuchen aus der Pfanne', author: 'GU Küchenratgeber' },
+    { label: 'Familie', title: 'Kinderleichte Familienrezepte', author: 'gemeinsam kochen' },
+    { label: 'Handwerk', title: 'Sauerteig', author: 'Zeit, Mehl und Wasser' }
+  ],
+  books: [
+    topicBook({
+      eyebrow: 'Backbuch',
+      title: 'Teigliebe',
+      author: 'Anna Röpfl',
+      isbn: '9783710605703'
+    }),
+    topicBook({
+      eyebrow: 'Familienbackbuch · 2025',
+      title: 'Sallys Backen mit Kindern',
+      author: 'Saliha Özcan',
+      isbn: '9783833898563'
+    }),
+    topicBook({
+      eyebrow: 'Neu seit 21. Oktober 2025',
+      title: 'Einfach geil Backen',
+      author: 'Axel Schmitt',
+      isbn: '9783833899256'
+    })
+  ],
+  durationMs: 41000
+});
+
+const litpromSlide = collectionSlide({
+  eyebrow: 'Weltliteratur',
+  title: 'Litprom',
+  author: 'Drei Titel aus dem Litprom-Katalog 2026',
+  palette: ['#d47aa8', '#62b6aa'],
+  symbol: 'W',
+  backgroundTitles: [
+    { label: 'Übersetzung', title: 'Globale Literaturen', author: 'in deutscher Sprache' },
+    { label: 'Afrika', title: 'Neue Stimmen', author: 'Romane und Erzählungen' },
+    { label: 'Asien', title: 'Gegenwartsliteratur', author: 'aus vielen Sprachen' },
+    { label: 'Lateinamerika', title: 'Literarische Entdeckungen', author: 'übersetzt ins Deutsche' },
+    { label: 'Indigen', title: 'Geschichten und Erinnerung', author: 'Perspektiven weltweit' }
+  ],
+  books: [
+    topicBook({
+      eyebrow: 'China · Neu seit 28. Mai 2026',
+      title: 'Der große Kanal',
+      author: 'Xu Zechen',
+      isbn: '9783751810715'
+    }),
+    topicBook({
+      eyebrow: 'Japan · Neu seit 20. April 2026',
+      title: 'Heimkehr nach Morioka',
+      author: 'Yuki Ibuki',
+      isbn: '9783458645726'
+    }),
+    topicBook({
+      eyebrow: 'Japan · Neu seit 10. Februar 2026',
+      title: 'Richtig gutes Essen',
+      author: 'Junko Takase',
+      isbn: '9783755800859'
+    })
+  ],
+  durationMs: 42000
 });
 
 const groupsSlide = {
@@ -317,6 +530,7 @@ const groupsSlide = {
   kicker: '',
   title: 'Gruppen gesucht',
   author: 'Unser Keller möchte genutzt werden',
+  audience: '',
   focus:
     'Lesezirkel, Spielrunde, Schreibtreff, Manga-Club oder Nachbarschaftsgruppe: Wir suchen Menschen, die unten etwas Gutes anfangen wollen.',
   note: 'Sprecht uns im Laden an, wenn ihr einen regelmäßigen Treff sucht.',
@@ -332,20 +546,15 @@ const groupsSlide = {
 
 export const slides = [
   everyDaySlide,
+  currentAffairsSlide,
+  politicsSlide,
+  citySlide,
+  litpromSlide,
   mangaCollectionSlide,
-  bookSlides[0],
-  groupsSlide,
-  bookSlides[1],
-  goodEndingSlide,
-  bookSlides[2],
-  readAgainSlide,
-  bookSlides[3],
   youngAdultCollectionSlide,
-  bookSlides[4],
-  canYouReadSlide,
-  bookSlides[5],
-  bookSlides[6],
-  bookSlides[7],
-  bookSlides[8],
-  bookSlides[9]
+  childrenCollectionSlide,
+  bakingSlide,
+  groupsSlide,
+  readAgainSlide,
+  canYouReadSlide
 ];

@@ -61,9 +61,10 @@ async function inspectBaseUrl(browser, baseUrl) {
     { label: 'desktop', viewport: { width: 1600, height: 1000 } },
     { label: 'mobile', viewport: { width: 390, height: 844 } },
   ]) {
-    results.push(await inspectBookViewport(browser, baseUrl, target));
-    results.push(await inspectCollectionViewport(browser, baseUrl, target, 2, 'manga'));
-    results.push(await inspectCollectionViewport(browser, baseUrl, target, 10, 'young-adult'));
+    results.push(await inspectCollectionViewport(browser, baseUrl, target, 3, 'politics'));
+    results.push(await inspectCollectionViewport(browser, baseUrl, target, 4, 'city'));
+    results.push(await inspectCollectionViewport(browser, baseUrl, target, 5, 'litprom'));
+    results.push(await inspectCollectionViewport(browser, baseUrl, target, 6, 'manga'));
   }
 
   return results;
@@ -93,7 +94,7 @@ function hasFailedResult(result) {
     || !result.coverVisible
     || !result.coverFromMediaFolder
     || !result.coverIsJpg
-    || !result.bookBackgroundWhite
+    || !result.bookBackgroundColored
     || !result.hasParticles
     || result.has3dRenderer
     || result.errors.length
@@ -123,7 +124,7 @@ async function inspectBookViewport(browser, baseUrl, target) {
       if (response.status() >= 400) failedResources.push(`${response.status()} ${response.url()}`);
     });
 
-    await page.goto(makeSlideUrl(baseUrl, 3), { waitUntil: 'load', timeout: 30000 });
+    await page.goto(makeSlideUrl(baseUrl, 12), { waitUntil: 'load', timeout: 30000 });
     await page.waitForFunction(() => {
       const image = document.querySelector('.cover-image');
       return image && image.complete && image.naturalWidth > 100 && image.naturalHeight > 100;
@@ -142,7 +143,7 @@ async function inspectBookViewport(browser, baseUrl, target) {
       const renderedHeight = imageRect.height;
       const naturalWidth = image.naturalWidth;
       const naturalHeight = image.naturalHeight;
-      const background = slideStyles.backgroundColor.replace(/\s+/g, '');
+      const backgroundImage = slideStyles.backgroundImage;
 
       return {
         title: document.querySelector('#title')?.textContent || '',
@@ -155,7 +156,7 @@ async function inspectBookViewport(browser, baseUrl, target) {
         coverVisible: Number(imageStyles.opacity || 1) > 0.9 && renderedWidth > 100 && renderedHeight > 100,
         coverFromMediaFolder: image.currentSrc.includes('/media/covers/'),
         coverIsJpg: /\.jpg($|\?)/i.test(new URL(image.currentSrc).pathname),
-        bookBackgroundWhite: background === 'rgb(255,255,255)' || background === '#fff' || background === '#ffffff',
+        bookBackgroundColored: backgroundImage && backgroundImage !== 'none' && backgroundImage.includes('gradient'),
         hasParticles: !!document.querySelector('.particles'),
         has3dRenderer: !!document.querySelector('.book-renderer-shell, .book-3d-canvas, canvas.book-3d-canvas'),
         cover: {
