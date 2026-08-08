@@ -7,10 +7,12 @@
     "start": "vite --host 0.0.0.0",
     "build": "vite build",
     "test": "node scripts/validate-content.mjs",
-    "test:renderer": "node scripts/verify_book_renderer.cjs"
+    "test:renderer": "node scripts/verify_book_renderer.cjs",
+    "generate:qr": "node scripts/generate-qr-codes.mjs"
   },
   "devDependencies": {
     "playwright-core": "^1.53.0",
+    "qrcode": "^1.5.4",
     "vite": "latest"
   }
 }

@@ -1,5 +1,6 @@
 import { slides, slideDurationMs } from '../src/slides.js';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 
 const assert = (condition, message) => {
@@ -62,6 +63,17 @@ slides.forEach((slide, index) => {
         assert(typeof item.title === 'string' && item.title.trim(), `collection slide ${index + 1}, book ${itemIndex + 1} is missing title`);
         assert(typeof item.author === 'string' && item.author.trim(), `collection slide ${index + 1}, book ${itemIndex + 1} is missing author`);
         assert(typeof item.src === 'string' && item.src.trim(), `collection slide ${index + 1}, book ${itemIndex + 1} is missing media src`);
+        assert(/^97\d{11}$/.test(item.isbn), `collection slide ${index + 1}, book ${itemIndex + 1} needs a valid ISBN-13`);
+        assert(
+          item.shopUrl === `https://schnelsener-buechereck.buchhandlung.de/shop/articleByEan/${item.isbn}`,
+          `collection slide ${index + 1}, book ${itemIndex + 1} needs its direct shop URL`
+        );
+        assert(typeof item.availability?.label === 'string' && item.availability.label.trim(), `collection slide ${index + 1}, book ${itemIndex + 1} is missing an availability label`);
+        assert(typeof item.availability?.detail === 'string' && item.availability.detail.trim(), `collection slide ${index + 1}, book ${itemIndex + 1} is missing an availability detail`);
+
+        const qrPath = join(process.cwd(), 'public', 'qr', `${item.isbn}.svg`);
+        assert(existsSync(qrPath), `collection slide ${index + 1}, book ${itemIndex + 1} is missing its QR code`);
+        assert(readFileSync(qrPath, 'utf8').includes('<svg'), `collection slide ${index + 1}, book ${itemIndex + 1} has an invalid QR code`);
 
         if (item.src.startsWith('/')) {
           const publicPath = join(process.cwd(), 'public', item.src.slice(1));
@@ -91,6 +103,12 @@ assert(posterCount === 3, 'show three deliberate shop-window slogans');
 assert(communityCount === 1, 'show the restored community slide');
 assert(instagramCount === 0, 'keep Instagram slides disabled for the live version');
 assert(videoCount === 0, 'keep video slides disabled for the live version');
+
+try {
+  execFileSync(process.execPath, [join(process.cwd(), 'scripts', 'generate-qr-codes.mjs'), '--check'], { stdio: 'pipe' });
+} catch {
+  throw new Error('QR code data does not match the direct shop links. Run npm run generate:qr.');
+}
 
 console.log(
   `Validated ${slides.length} slides: ${bookCount} books, ${collectionCount} collections, ${posterCount} posters and ${communityCount} community slide.`

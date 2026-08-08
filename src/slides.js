@@ -1,7 +1,21 @@
-// Aktualisiert am 06.08.2026: Heartstopper 6 nach aktuellem Jugendbuch-Bestsellerrang hervorgehoben.
+// Aktualisiert am 08.08.2026: veraltete Bestsellerplatzierungen durch belegte Erscheinungsdaten ersetzt.
 export const slideDurationMs = 42000;
 
 const BASE = (import.meta.env && import.meta.env.BASE_URL) || '/';
+const SHOP_BASE_URL = 'https://schnelsener-buechereck.buchhandlung.de/shop';
+
+const pickupAvailability = {
+  label: 'Ladenabholung möglich',
+  detail: 'Lieferbarkeit und Abholtermin im Shop prüfen'
+};
+
+function orderDetails(isbn, availability = pickupAvailability) {
+  return {
+    isbn,
+    shopUrl: `${SHOP_BASE_URL}/articleByEan/${isbn}`,
+    availability
+  };
+}
 
 const instagramVideos = [
   ['DXKQgubDRUv', ['#405de6', '#fdc468']],
@@ -23,6 +37,7 @@ function bookSlide({
   palette,
   symbol,
   isbn,
+  availability,
   durationMs = 40000
 }) {
   const coverSrc = `${BASE}media/covers/${isbn}.jpg`;
@@ -38,7 +53,7 @@ function bookSlide({
     note: '',
     palette,
     symbol,
-    isbn,
+    ...orderDetails(isbn, availability),
     durationMs,
     media: {
       kind: 'image',
@@ -106,6 +121,9 @@ function collectionSlide({
         title: book.title,
         author: book.author,
         label: book.eyebrow.split('·').slice(1).join('·').trim(),
+        isbn: book.isbn,
+        shopUrl: book.shopUrl,
+        availability: book.availability,
         src: book.media.coverSrc,
         alt: book.media.alt
       }))
@@ -113,13 +131,14 @@ function collectionSlide({
   };
 }
 
-function topicBook({ eyebrow, title, author, isbn }) {
+function topicBook({ eyebrow, title, author, isbn, availability }) {
   const coverSrc = `${BASE}media/covers/${isbn}.jpg`;
 
   return {
     eyebrow,
     title,
     author,
+    ...orderDetails(isbn, availability),
     media: {
       kind: 'image',
       src: coverSrc,
@@ -221,7 +240,7 @@ const bookSlides = [
     durationMs: 42000
   }),
   bookSlide({
-    month: 'Graphic Novel · ab 12 · Aktuell Platz 2',
+    month: 'Graphic Novel · ab 12 · Neu seit 23. Juli 2026',
     title: 'Heartstopper Volume 6',
     author: 'Alice Oseman',
     focus:
@@ -243,6 +262,10 @@ const bookSlides = [
     palette: ['#1d4b46', '#d9aa6a'],
     symbol: '🐍',
     isbn: '9783551587251',
+    availability: {
+      label: 'Vorbestellung',
+      detail: 'Abholung nach Erscheinen – Termin im Shop prüfen'
+    },
     durationMs: 42000
   }),
   bookSlide({
@@ -257,7 +280,7 @@ const bookSlides = [
     durationMs: 41000
   }),
   bookSlide({
-    month: 'Kinderbuch · ab 10 · Neu auf Platz 2',
+    month: 'Kinderbuch · ab 10 · Neu seit 15. Juni 2026',
     title: 'Windwalkers (3). Giftige Gefahr',
     author: 'Katja Brandis',
     focus:
@@ -276,6 +299,10 @@ const bookSlides = [
     palette: ['#f2d7e6', '#b54f8c'],
     symbol: '✦',
     isbn: '9783743223417',
+    availability: {
+      label: 'Vorbestellung',
+      detail: 'Abholung nach Erscheinen – Termin im Shop prüfen'
+    },
     durationMs: 39000
   })
 ];

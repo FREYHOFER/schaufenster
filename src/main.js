@@ -1,6 +1,9 @@
 import './styles.css';
 import { slideDurationMs, slides } from './slides.js';
 
+const assetBaseUrl = (import.meta.env && import.meta.env.BASE_URL) || '/';
+const orderRotationMs = 8000;
+
 const refs = {
   root: document.documentElement,
   slide: document.querySelector('#slide'),
@@ -12,6 +15,13 @@ const refs = {
   audience: document.querySelector('#audience'),
   focus: document.querySelector('#focus'),
   note: document.querySelector('#note'),
+  orderPanel: document.querySelector('#orderPanel'),
+  orderQr: document.querySelector('#orderQr'),
+  orderTitle: document.querySelector('#orderTitle'),
+  orderAvailability: document.querySelector('#orderAvailability'),
+  orderDetail: document.querySelector('#orderDetail'),
+  orderLink: document.querySelector('#orderLink'),
+  orderProgress: document.querySelector('#orderProgress'),
   slideProgress: document.querySelector('#slideProgress'),
   progressFill: document.querySelector('#progressFill'),
   pauseToggle: document.querySelector('#pauseToggle'),
@@ -28,6 +38,8 @@ let manualPaused = params.get('pause') === '1' || params.get('pause') === 'true'
 let resizeTimeoutId;
 let touchStartX;
 let touchStartY;
+let orderRotationTimerId;
+let activeOrderContext;
 
 function normalizeIndex(index) {
   return ((index % slides.length) + slides.length) % slides.length;
@@ -136,12 +148,24 @@ function renderCollection(slide) {
   grid.className = 'collection-grid';
   grid.setAttribute('aria-label', `${slide.title}: ${slide.media.items.length} Buchtipps`);
   grid.style.setProperty('--collection-count', slide.media.items.length);
+  const cards = [];
 
   slide.media.items.forEach((item, index) => {
     preloadImage(item.src, index === 0 ? 'high' : 'low');
 
     const card = document.createElement('article');
     card.className = 'collection-card';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    card.setAttribute('aria-label', `QR-Code für ${item.title} zum Bestellen anzeigen`);
+    card.addEventListener('click', () => showOrderItem(index, true));
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showOrderItem(index, true);
+      }
+    });
 
     const cover = document.createElement('div');
     cover.className = 'collection-cover';
@@ -169,14 +193,20 @@ function renderCollection(slide) {
     author.className = 'collection-author';
     author.textContent = item.author;
 
+    const orderCue = document.createElement('p');
+    orderCue.className = 'collection-order-cue';
+    orderCue.textContent = 'QR-Code scannen →';
+
     cover.append(image);
-    details.append(label, title, author);
+    details.append(label, title, author, orderCue);
     card.append(cover, details);
     grid.append(card);
+    cards.push(card);
   });
 
   scene.append(grid);
   refs.visual.append(scene);
+  return cards;
 }
 
 function renderVideo(slide) {
@@ -218,6 +248,7 @@ function renderVisual(slide) {
   refs.visual.replaceChildren();
   refs.visual.textContent = '';
   refs.visual.dataset.media = slide.media?.kind || 'symbol';
+  refs.visual.toggleAttribute('aria-hidden', slide.media?.kind !== 'collection');
 
   if (slide.media?.kind === 'image' && slide.media.src) {
     renderImage(slide);
@@ -225,8 +256,7 @@ function renderVisual(slide) {
   }
 
   if (slide.media?.kind === 'collection' && slide.media.items?.length) {
-    renderCollection(slide);
-    return null;
+    return renderCollection(slide);
   }
 
   if (slide.media?.kind === 'video' && slide.media.src) {
@@ -241,6 +271,94 @@ function renderVisual(slide) {
 
   renderSymbol(slide);
   return null;
+}
+
+function getQrSource(isbn) {
+  return `${assetBaseUrl}qr/${encodeURIComponent(isbn)}.svg`;
+}
+
+function stopOrderRotation() {
+  if (orderRotationTimerId) {
+    window.clearInterval(orderRotationTimerId);
+    orderRotationTimerId = undefined;
+  }
+}
+
+function clearOrderPanel() {
+  stopOrderRotation();
+  activeOrderContext = undefined;
+  refs.orderPanel.hidden = true;
+  refs.orderQr.removeAttribute('src');
+  refs.orderQr.alt = '';
+  refs.orderTitle.textContent = '';
+  refs.orderAvailability.textContent = '';
+  refs.orderDetail.textContent = '';
+  refs.orderLink.removeAttribute('href');
+  refs.orderLink.textContent = '';
+  refs.orderProgress.textContent = '';
+}
+
+function startOrderRotation() {
+  stopOrderRotation();
+
+  if (!activeOrderContext || activeOrderContext.items.length < 2 || isPaused() || reducedMotionQuery.matches) {
+    return;
+  }
+
+  orderRotationTimerId = window.setInterval(() => {
+    if (!activeOrderContext) {
+      stopOrderRotation();
+      return;
+    }
+
+    showOrderItem(activeOrderContext.index + 1);
+  }, orderRotationMs);
+}
+
+function showOrderItem(index, restartRotation = false) {
+  if (!activeOrderContext) {
+    return;
+  }
+
+  const { items, cards } = activeOrderContext;
+  const normalizedIndex = ((index % items.length) + items.length) % items.length;
+  const item = items[normalizedIndex];
+
+  if (!item?.isbn || !item.shopUrl) {
+    return;
+  }
+
+  activeOrderContext.index = normalizedIndex;
+  cards.forEach((card, cardIndex) => {
+    const isActive = cardIndex === normalizedIndex;
+    card.classList.toggle('is-order-active', isActive);
+    card.setAttribute('aria-pressed', String(isActive));
+  });
+
+  refs.orderQr.src = getQrSource(item.isbn);
+  refs.orderQr.alt = `QR-Code zum Bestellen von ${item.title} im Onlineshop`;
+  refs.orderTitle.textContent = item.title;
+  refs.orderAvailability.textContent = item.availability?.label || 'Abholung im Laden';
+  refs.orderDetail.textContent = item.availability?.detail || 'Lieferbarkeit im Shop prüfen';
+  refs.orderLink.href = item.shopUrl;
+  refs.orderLink.textContent = `„${item.title}“ im Shop öffnen`;
+  refs.orderProgress.textContent = `${normalizedIndex + 1} von ${items.length}`;
+  refs.orderProgress.hidden = items.length < 2;
+
+  if (restartRotation) {
+    startOrderRotation();
+  }
+}
+
+function setupOrderPanel(items, cards) {
+  if (!items?.length || !cards?.length) {
+    return;
+  }
+
+  activeOrderContext = { items, cards, index: 0 };
+  refs.orderPanel.hidden = false;
+  showOrderItem(0);
+  startOrderRotation();
 }
 
 function setOptionalText(ref, value) {
@@ -473,8 +591,15 @@ function renderSlide(index) {
   setOptionalText(refs.note, slide.note);
   updateProgress(index);
   updatePauseButton();
+  clearOrderPanel();
   renderParticles(slide, index);
-  const mediaElement = renderVisual(slide);
+  const visualResult = renderVisual(slide);
+
+  if (slide.type === 'collection') {
+    setupOrderPanel(slide.media?.items, visualResult);
+  }
+
+  const mediaElement = visualResult instanceof HTMLVideoElement ? visualResult : null;
 
   scheduleNextSlide(baseDuration);
 
@@ -512,6 +637,7 @@ function setPaused(nextPaused) {
   if (manualPaused) {
     params.set('pause', '1');
     window.clearTimeout(advanceTimeoutId);
+    stopOrderRotation();
   } else {
     params.delete('pause');
   }
@@ -637,6 +763,7 @@ document.addEventListener('visibilitychange', () => {
     renderCurrentSlide();
   } else {
     stopParticleAnimation();
+    stopOrderRotation();
   }
 });
 

@@ -6,9 +6,21 @@
     <link rel="icon" href="data:," />
     <meta
       name="description"
-      content="Aktuelle Manga-, Young-Adult- und Kinderbuch-Tipps vom Schnelsener Büchereck für junge Leser*innen, Familien und Eltern."
+      content="Aktuelle Buchtipps vom Schnelsener Büchereck – per QR-Code direkt im Onlineshop bestellen und im Laden abholen."
     />
-    <title>Schnelsener Büchereck · Manga, YA & Kinderbücher</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://schaufenster.vercel.app/" />
+    <meta property="og:title" content="Schnelsener Büchereck · Direkt aus dem Schaufenster bestellen" />
+    <meta property="og:description" content="Buchtipps scannen, online bestellen und im Laden abholen." />
+    <meta property="og:image" content="https://schaufenster.vercel.app/og.png" />
+    <meta property="og:image:width" content="1731" />
+    <meta property="og:image:height" content="909" />
+    <meta property="og:image:alt" content="Schnelsener Büchereck: Bücher direkt aus dem Schaufenster bestellen." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Schnelsener Büchereck · Direkt aus dem Schaufenster bestellen" />
+    <meta name="twitter:description" content="Buchtipps scannen, online bestellen und im Laden abholen." />
+    <meta name="twitter:image" content="https://schaufenster.vercel.app/og.png" />
+    <title>Schnelsener Büchereck · Direkt aus dem Schaufenster bestellen</title>
   </head>
   <body>
     <main class="stage" aria-live="polite">
@@ -22,6 +34,19 @@
           <p class="audience" id="audience"></p>
           <p class="focus" id="focus"></p>
           <p class="note" id="note"></p>
+          <section class="order-panel" id="orderPanel" aria-label="Direkt im Onlineshop bestellen" hidden>
+            <div class="order-panel__qr">
+              <img id="orderQr" alt="" width="256" height="256" />
+            </div>
+            <div class="order-panel__content">
+              <p class="order-panel__eyebrow">Jetzt bestellen</p>
+              <p class="order-panel__title" id="orderTitle"></p>
+              <p class="order-panel__availability" id="orderAvailability"></p>
+              <p class="order-panel__detail" id="orderDetail"></p>
+              <a class="order-panel__link" id="orderLink" target="_blank" rel="noopener noreferrer">Im Shop öffnen</a>
+              <p class="order-panel__progress" id="orderProgress"></p>
+            </div>
+          </section>
         </div>
         <div class="slide-controls" aria-label="Diashow-Steuerung">
           <span class="slide-progress" id="slideProgress"></span>

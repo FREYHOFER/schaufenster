@@ -34,3 +34,13 @@ Ein neues Cover wird ergänzt, indem die Datei unter ihrer ISBN abgelegt und in 
 ```bash
 public/media/covers/9780000000000.jpg
 ```
+
+## QR-Codes für Bestellungen
+
+Jeder sichtbare Titel hat einen QR-Code zur direkten Produktseite im Onlineshop. Nach Änderungen an ISBNs oder Titeln bitte die QR-Codes neu erzeugen:
+
+```bash
+npm run generate:qr
+```
+
+`npm test` prüft außerdem, ob jeder QR-Code noch genau zum hinterlegten Shop-Link passt.
