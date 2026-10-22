@@ -4,11 +4,15 @@ Ein bewusst reduzierter Prototyp für ein digitales Buchhandlungs-Schaufenster: 
 
 ## Inhalt
 
-- Zehn kuratierte Titel für ein jüngeres Publikum: vier Manga, drei Young-Adult- und drei Kinderbücher.
-- Zwei Übersichtsseiten zeigen die Manga- und Young-Adult-Auswahl jeweils gemeinsam.
-- Vier cremeweiße Diogenes-Spruchfolien und die Seite „Gruppen gesucht“ zwischen den Buchtipps.
-- Die Einzeltipps zeigen klare Buchcover mit Klappentext-Fassung und ruhiger Lesedauer.
-- Instagram-Momente aus lokalen Feed-Videos mit reduziertem Follow-Hinweis.
+Aktuelle Auswahl: **22. Oktober 2026**, 25 Titel in acht Themenbereichen.
+Die bibliografischen Daten und Quellen stehen in [`src/catalog.js`](src/catalog.js).
+[`CONTENT.md`](CONTENT.md) dokumentiert Auswahl und Pflege.
+
+- Acht Themenübersichten mit 25 Büchern: Aktuelles, Politik, Stadt, Litprom,
+  Manga, Young Adult, Kinder und Backen.
+- Drei Spruchfolien und die Seite „Gruppen gesucht“ ergänzen die Buchauswahl.
+- Buchcover mit bibliografischen Angaben und zugehörigem Shop-QR-Code.
+- Instagram- und Videofolien bleiben deaktiviert.
 - Dezente Pfeilnavigation und Tastatursteuerung: Die Präsentation läuft trotzdem wie eine ruhige Diashow.
 
 ## Entwicklung

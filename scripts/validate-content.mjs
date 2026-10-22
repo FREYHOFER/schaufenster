@@ -1,4 +1,6 @@
 import { slides, slideDurationMs } from '../src/slides.js';
+import { publicationDetails } from '../src/slides.js';
+import { catalog, catalogCheckedAt } from '../src/catalog.js';
 import { existsSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -8,6 +10,22 @@ const assert = (condition, message) => {
     throw new Error(message);
   }
 };
+
+const isbns = new Set();
+for (const book of catalog.flatMap(topic => topic.books)) {
+  assert(!isbns.has(book.isbn), `duplicate ISBN: ${book.isbn}`);
+  isbns.add(book.isbn);
+  assert(/^97\d{11}$/.test(book.isbn), `invalid ISBN: ${book.title}`);
+  assert([...book.isbn].reduce((sum, digit, i) => sum + Number(digit) * (i % 2 ? 3 : 1), 0) % 10 === 0, `ISBN checksum: ${book.title}`);
+  assert(/^https:\/\//.test(book.sourceUrl), `missing source: ${book.title}`);
+  assert(Boolean(book.releaseDate) !== Boolean(book.releaseMonth), `provide a day OR a month: ${book.title}`);
+  const details = publicationDetails(book, catalogCheckedAt);
+  if (book.releaseDate > catalogCheckedAt) assert(details.availability.label === 'Vorbestellung', `future title needs preorder: ${book.title}`);
+  if (book.releaseDate && book.releaseDate <= catalogCheckedAt) assert(details.availability.label !== 'Vorbestellung', `released title still on preorder: ${book.title}`);
+}
+const onePiece = catalog.flatMap(topic => topic.books).find(book => book.isbn === '9783551805225');
+assert(publicationDetails(onePiece, '2026-10-26').availability.label === 'Vorbestellung', 'One Piece should be a preorder before release');
+assert(publicationDetails(onePiece, '2026-10-27').availability.label === 'Ladenabholung möglich', 'preorder should end on release day');
 
 assert(Array.isArray(slides), 'slides must be an array');
 assert(slides.length >= 8, 'slideshow should contain at least 8 slides');

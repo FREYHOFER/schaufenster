@@ -1120,6 +1120,11 @@ h1 {
   line-height: 1;
 }
 
+.slide[data-type="collection"] h1 {
+  font-size: clamp(2rem, 3vw, 4rem);
+  overflow-wrap: anywhere;
+}
+
 .nav-zone {
   position: absolute;
   top: 0;
@@ -1130,6 +1135,7 @@ h1 {
   align-items: center;
   opacity: 0;
   transition: opacity 180ms ease;
+  pointer-events: none;
 }
 
 .nav-zone--previous {
@@ -1152,6 +1158,7 @@ h1 {
 }
 
 .nav-button {
+  pointer-events: auto;
   display: grid;
   width: clamp(3rem, 5vw, 4.35rem);
   aspect-ratio: 1;
