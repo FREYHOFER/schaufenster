@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "vite build && node scripts/build-offline-manifest.mjs",
     "test": "node scripts/validate-content.mjs",
     "test:renderer": "node scripts/verify_book_renderer.cjs",
     "generate:qr": "node scripts/generate-qr-codes.mjs"

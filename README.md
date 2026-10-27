@@ -1,5 +1,8 @@
 # Schaufenster-Diashow
 
+Die zuverlässige lokale Windows-Anzeige mit Autostart und geprüften Offline-Updates
+ist unter [`kiosk/README.md`](kiosk/README.md) dokumentiert.
+
 Ein bewusst reduzierter Prototyp für ein digitales Buchhandlungs-Schaufenster: automatisch laufend, per Pfeiltasten durchsehbar und immer auf genau einen Tipp fokussiert.
 
 ## Inhalt
