@@ -1,4 +1,5 @@
 import { slides, slideDurationMs } from '../src/slides.js';
+import { christmasBooks } from '../src/christmas.js';
 import { publicationDetails } from '../src/slides.js';
 import { catalog, catalogCheckedAt } from '../src/catalog.js';
 import { existsSync, readFileSync } from 'node:fs';
@@ -22,6 +23,11 @@ for (const book of catalog.flatMap(topic => topic.books)) {
   const details = publicationDetails(book, catalogCheckedAt);
   if (book.releaseDate > catalogCheckedAt) assert(details.availability.label === 'Vorbestellung', `future title needs preorder: ${book.title}`);
   if (book.releaseDate && book.releaseDate <= catalogCheckedAt) assert(details.availability.label !== 'Vorbestellung', `released title still on preorder: ${book.title}`);
+}
+for (const book of christmasBooks) {
+  assert(/^97\d{11}$/.test(book.isbn), 'invalid Christmas ISBN: ' + book.title);
+  assert([...book.isbn].reduce((sum, digit, i) => sum + Number(digit) * (i % 2 ? 3 : 1), 0) % 10 === 0, 'Christmas ISBN checksum: ' + book.title);
+  assert(book.sourceUrl.startsWith('https://'), 'missing Christmas source');
 }
 const onePiece = catalog.flatMap(topic => topic.books).find(book => book.isbn === '9783551805225');
 assert(publicationDetails(onePiece, '2026-10-26').availability.label === 'Vorbestellung', 'One Piece should be a preorder before release');
@@ -65,7 +71,8 @@ slides.forEach((slide, index) => {
     if (slide.media.kind === 'collection') {
       assert(Array.isArray(slide.media.items) && slide.media.items.length >= 1, `collection slide ${index + 1} needs at least one book`);
       assert(Array.isArray(slide.media.backgroundItems), `collection slide ${index + 1} needs decorative background titles`);
-      assert(slide.media.backgroundItems.length >= 3, `collection slide ${index + 1} needs at least three decorative background titles`);
+      assert(slide.media.items.length === 1, 'every book slide must show exactly one title');
+      assert(slide.media.backgroundItems.length === 0, 'keep decorative titles out of the single-book display');
 
       const foregroundTitles = new Set(slide.media.items.map((item) => item.title));
 
@@ -116,8 +123,9 @@ const posterCount = slides.filter((slide) => slide.type === 'poster').length;
 const communityCount = slides.filter((slide) => slide.type === 'community').length;
 const videoCount = slides.filter((slide) => slide.media?.kind === 'video').length;
 assert(bookCount === 0, 'keep individual book slides out of the condensed shop-window rotation');
-assert(collectionCount === 8, 'show eight substantial editorial overview slides');
-assert(posterCount === 3, 'show three deliberate shop-window slogans');
+assert(collectionCount === 12, 'show six Christmas books and six gift recommendations');
+assert(christmasBooks.every(book => slides.some(slide => slide.media?.items?.[0]?.isbn === book.isbn)), 'include all Christmas books');
+assert(posterCount === 4, 'show four Christmas messages');
 assert(communityCount === 1, 'show the restored community slide');
 assert(instagramCount === 0, 'keep Instagram slides disabled for the live version');
 assert(videoCount === 0, 'keep video slides disabled for the live version');

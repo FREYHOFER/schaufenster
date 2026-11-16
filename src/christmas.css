@@ -1,0 +1,168 @@
+/* Festive window display. Every product slide contains exactly one book. */
+body {
+  background: #092c25;
+  animation: none;
+}
+.slide[data-theme^="christmas"] {
+  --gold: #e8cb8d;
+  background: radial-gradient(ellipse at 18% 50%, #245544 0%, transparent 55%), #092c25;
+  color: #fff8e9;
+}
+.slide[data-theme^="christmas"]::before {
+  z-index: -1;
+  background: radial-gradient(circle at 78% 8%, #d6b46f24, transparent 42%);
+}
+.slide[data-theme^="christmas"]::after {
+  inset: 1.2rem;
+  border: 1px solid #e8cb8d55;
+  background: none;
+  opacity: 1;
+  transform: none;
+  animation: none;
+  pointer-events: none;
+}
+.slide[data-theme^="christmas"] .eyebrow {
+  position: static;
+  justify-self: start;
+  color: var(--gold);
+  border: 0;
+  background: none;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+}
+.slide[data-theme^="christmas"] .eyebrow::before { content: '✦'; margin-right: .8em; }
+.slide[data-theme^="christmas"] .kicker { color: var(--gold); }
+.nav-zone { pointer-events: none; }
+.nav-button { pointer-events: auto; }
+.slide[data-theme="christmas"] {
+  --u: min(1vw, 1.777778svh);
+  padding: calc(4 * var(--u));
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: calc(2.5 * var(--u)) calc(5 * var(--u));
+}
+.slide[data-theme="christmas"] .eyebrow {
+  grid-column: 1 / -1;
+  font-size: calc(1.1 * var(--u));
+  max-width: 80%;
+}
+.slide[data-theme="christmas"] .visual {
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 0;
+  height: 100%;
+}
+.slide[data-theme="christmas"] .collection-scene,
+.slide[data-theme="christmas"] .collection-grid,
+.slide[data-theme="christmas"] .collection-card,
+.slide[data-theme="christmas"] .collection-cover { height: 100%; min-height: 0; }
+.slide[data-theme="christmas"] .collection-card {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  cursor: default;
+}
+.slide[data-theme="christmas"] .collection-cover img {
+  width: 100%; height: 100%; max-height: 100%; object-fit: contain;
+  filter: drop-shadow(0 1.2rem 1.2rem #0007);
+}
+.slide[data-theme="christmas"] .collection-details { display: none; }
+.slide[data-theme="christmas"] .copy {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  max-width: none;
+  gap: calc(1.1 * var(--u));
+}
+.slide[data-theme="christmas"] .kicker {
+  font-size: calc(1.18 * var(--u));
+  line-height: 1.3;
+  letter-spacing: .06em;
+  margin: 0;
+}
+.slide[data-theme="christmas"] h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  font-size: calc(3.65 * var(--u));
+  line-height: 1.06;
+  letter-spacing: -.025em;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  margin: 0;
+}
+.slide[data-theme="christmas"] .author {
+  font-size: calc(1.65 * var(--u)); line-height: 1.25; margin: 0;
+  color: #e8cb8d;
+}
+.slide[data-theme="christmas"] .focus {
+  display: block;
+  max-height: none;
+  max-width: none;
+  font-size: calc(1.45 * var(--u)); line-height: 1.45; margin: 0;
+  color: #fff8e9d9;
+}
+.slide[data-theme="christmas"] .order-panel {
+  grid-template-columns: calc(10.5 * var(--u)) minmax(0, 1fr);
+  gap: calc(1.25 * var(--u));
+  margin: calc(.5 * var(--u)) 0 0;
+  padding: calc(1 * var(--u));
+  border: 1px solid #e8cb8d66;
+  border-radius: calc(.6 * var(--u));
+  background: #ffffff08;
+  box-shadow: none;
+}
+.slide[data-theme="christmas"] .order-panel__qr { padding: 0; border-radius: .25rem; }
+.slide[data-theme="christmas"] .order-panel__title { display: none; }
+.slide[data-theme="christmas"] .order-panel__eyebrow { font-size: calc(1.2 * var(--u)); color: #e8cb8d; }
+.slide[data-theme="christmas"] .order-panel__availability,
+.slide[data-theme="christmas"] .order-panel__detail,
+.slide[data-theme="christmas"] .order-panel__link {
+  font-size: calc(1.02 * var(--u)); line-height: 1.3; margin-top: calc(.5 * var(--u));
+}
+.slide[data-theme="christmas-poster"] {
+  display: flex; flex-direction: column;
+  padding: clamp(1.5rem, 5vw, 6rem);
+  background: radial-gradient(ellipse at 80% 90%, #7a3b3338, transparent 60%), #092c25;
+}
+.slide[data-theme="christmas-poster"] .visual { display: none; }
+.slide[data-theme="christmas-poster"] .copy {
+  display: flex; flex: 1; flex-direction: column; justify-content: center;
+  max-width: 85%; gap: 1.5rem; z-index: 1;
+}
+.slide[data-theme="christmas-poster"] .kicker { font-size: clamp(.9rem, 1.2vw, 1.6rem); letter-spacing: .18em; }
+.slide[data-theme="christmas-poster"] h1 {
+  font-family: Georgia, 'Times New Roman', serif; font-weight: 400;
+  font-size: min(6.5vw, 11.5svh); line-height: 1.06; letter-spacing: -.035em;
+  max-width: 18ch; margin: 0; text-wrap: balance;
+}
+.slide[data-theme="christmas-poster"] .author { color: #e8cb8d; font-size: clamp(1rem, 1.7vw, 2.2rem); margin: 0; }
+.slide[data-theme="christmas-poster"] .audience { font-size: clamp(1rem, 1.7vw, 2.2rem); margin: 0; }
+.slide[data-theme="christmas-poster"] .note { font-size: clamp(.85rem, 1.1vw, 1.5rem); margin-top: 1rem; }
+@media (max-aspect-ratio: 4/3) {
+  .slide[data-theme="christmas"] {
+    --u: min(1.8vw, 1.1svh);
+    padding: 2rem 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: 1rem;
+  }
+  .slide[data-theme="christmas"] .eyebrow { grid-column: 1; font-size: max(.65rem, calc(1.1 * var(--u))); }
+  .slide[data-theme="christmas"] .visual { grid-column: 1; grid-row: 2; }
+  .slide[data-theme="christmas"] .copy { grid-column: 1; grid-row: 3; }
+  .slide[data-theme="christmas"] .focus { font-size: calc(1.6 * var(--u)); }
+  .slide[data-theme="christmas"] .order-panel { grid-template-columns: calc(11 * var(--u)) minmax(0, 1fr); }
+  .slide[data-theme="christmas"] .order-panel__eyebrow { font-size: calc(1.4 * var(--u)); }
+  .slide[data-theme="christmas"] .order-panel__availability,
+  .slide[data-theme="christmas"] .order-panel__detail,
+  .slide[data-theme="christmas"] .order-panel__link { font-size: calc(1.25 * var(--u)); }
+  .slide[data-theme="christmas-poster"] h1 { font-size: min(10vw, 7svh); }
+  .slide[data-theme="christmas-poster"] .copy { max-width: 100%; }
+}

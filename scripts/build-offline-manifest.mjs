@@ -1,10 +1,10 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { catalog } from '../src/catalog.js';
+import { slides } from '../src/slides.js';
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 const files = new Set(['index.html', 'media/community/groups-reference.png']);
 for (const name of await readdir('dist/assets')) files.add(`assets/${name}`);
-for (const book of catalog.flatMap(topic => topic.books)) {
+for (const book of slides.flatMap(slide => slide.media?.items || [])) {
   files.add(`media/covers/${book.isbn}.jpg`);
   files.add(`qr/${book.isbn}.svg`);
 }

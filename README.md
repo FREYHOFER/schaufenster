@@ -1,3 +1,9 @@
+# Weihnachten 2026
+
+Ein Buch pro Folie: sechs Weihnachtsbücher, sechs Geschenkideen, vier Weihnachtsbotschaften und die Gruppenfolie. Große Cover und feste QR-Codes zum jeweiligen Shopartikel.
+
+Prüfen mit `npm test`, `npm run build` und `npm run test:display -- <Basis-URL>`. Redaktionelle Details: [CONTENT.md](CONTENT.md). Lokaler Offline-Kiosk: [kiosk/README.md](kiosk/README.md).
+
 # Schaufenster-Diashow
 
 Die zuverlässige lokale Windows-Anzeige mit Autostart und geprüften Offline-Updates

@@ -1,4 +1,5 @@
 import './styles.css';
+import './christmas.css';
 import { slideDurationMs, slides } from './slides.js';
 
 const assetBaseUrl = (import.meta.env && import.meta.env.BASE_URL) || '/';
@@ -155,17 +156,7 @@ function renderCollection(slide) {
 
     const card = document.createElement('article');
     card.className = 'collection-card';
-    card.tabIndex = 0;
-    card.setAttribute('role', 'button');
-    card.setAttribute('aria-pressed', 'false');
-    card.setAttribute('aria-label', `QR-Code für ${item.title} zum Bestellen anzeigen`);
-    card.addEventListener('click', () => showOrderItem(index, true));
-    card.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        showOrderItem(index, true);
-      }
-    });
+    card.setAttribute('aria-label', item.title);
 
     const cover = document.createElement('div');
     cover.className = 'collection-cover';
@@ -332,7 +323,7 @@ function showOrderItem(index, restartRotation = false) {
   cards.forEach((card, cardIndex) => {
     const isActive = cardIndex === normalizedIndex;
     card.classList.toggle('is-order-active', isActive);
-    card.setAttribute('aria-pressed', String(isActive));
+    if (items.length > 1) card.setAttribute('aria-pressed', String(isActive));
   });
 
   refs.orderQr.src = getQrSource(item.isbn);
